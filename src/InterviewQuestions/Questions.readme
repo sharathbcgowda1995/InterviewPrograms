@@ -1,0 +1,103 @@
+Prepare well for your introduction
+Be crisp & clear while answering interview questions, your hard work & confidence level should be reflected in your answers
+Apart from following list of questions, questions would be asked on Core Java, OOPS.
+Prepare on OOPs, Strings, Array, Looping & Conditional Structures, Collections (OCA level-I)
+Also get to know basics about SDLC/STLC, Defect Life Cycle, Waterfall, Agile
+Understand the objective/purpose of following questions so comprehensive answers could be given
+Focus on concepts & prepare suitable example to support
+---------------------------------------
+1. What is an API?
+2. What is difference between API & web service?
+3. Give some example of webservice and one api which is not a webservice
+4. What is difference between monolithic and microservice based architecture?
+5. What is your understanding of what are RESTful web services?
+6. What is difference between SOAP & RESTful web services?
+7. What are features of RESTful web services?
+8. Can you explain about JSON?
+9. What are the components of HTTP request & response?
+10. Can you explain about statelessness with respect to Restful web service? Also advantages & disadvantages.
+11. What is Rest Assured?
+12. Explain relation between URL, URI & Endpoint
+13. What is resource?
+14. How API is described in RAML, YAML & Swagger?
+15. What is Json Schema? What is the latest standard on Json Schema?
+16. What is use of headers in webservice? Can you name few headers you frequently come across while dealing with web services?
+17. What is payload?
+18. List & Explain some HTTP methods? What is CRUD?
+19. What is difference between PUT & PATCH method?
+20. What could be the purpose of OPTIONS & HEAD methods? Are they supported by Rest Assured library?
+21. What is the purpose of HTTP status code?
+22. Explain http response categories and give examples about few http response codes you frequently come across?
+23. What is difference between Json & Jsonpath? 
+24. What is advantage of using postman tool over browser while testing rest api?
+25. What is advantage of using Rest Assured for automation over Postman tool?
+26. Name & explain few classes & interfaces from rest assured library?
+27. How will you write a simple Rest Assured testcase that validates status code and body contents?
+28. How will you write a simple Rest Assured testcase that validates sample json response? Hint - JsonSchemaValidator
+29. API returns a simple integer array [1, 2, 3], how to test such a response using Rest Assured?
+30. How to pass given parameters and headers to API call?
+31. How will you extract custom node from Json response using JsonPath?
+32. How to set a JSON body for a POST API call?
+33. How to verify cookie, status, headers & content-type in API response?
+34. How will you log test case execution – request/response on console using rest assured?
+35. What methodology you prefer to write rest assured code? TDD or BDD? And Why?
+36. What is difference between junit & testng framework?
+37. Explain few annotations from both frameworks
+38. Explain on parameterization in testng – parameters & dataprovider
+39. Explain on grouping & prioritizing test cases in testng
+40. How test cases are executed from testng.xml? Explain its structure & usage
+41. How to skip or disable test cases in testng test suite?
+42. How do you execute TestNg test case from maven?
+43. What are hamcrest assertions? How they are supported in rest assured framework?
+44. Compare testng & hamcrest assertions
+45. How would you make use of testng in rest assured test cases? How will you use before & after tags to optimize test execution?
+46. What is the use of listeners in testng?
+47. What are different ways to produce test reports in testng?
+48. How to handle logs using log4j framework?
+49. Could you please explain on dependencies used for rest assured test framework from TDD perspective and BDD perspective?
+50. What is cucumber test framework?
+51. How test code is organized in cucumber?
+52. Explain important keyword used to draft cucumber scenarios
+53. Explain runner class from perspective of running specific features/scenarios
+54. What is difference in scenario & scenario outline?
+55. What is use of background?
+56. How to generate & implement step definitions in cucumber?
+57. How to configure cucumber reporting options?
+58. How many programming languages are supported by cucumber?
+59. How many spoken languages supported by gherkin for writing feature file?
+60. How would you organize rest assured test case code to make optimum use of cucumber framework? Give an example
+61. How do you execute cucumber test case from maven?
+62. How to execute maven test cases from command line?
+63. What is maven?
+64. Which maven plugins you have worked with?
+65. Mention three build lifecycles of maven
+66. What are build lifecycle phases?
+67. How would you write maven goal to execute test cases in suite?
+68. How would run specific test classed in maven? Hint: Surefire
+69. What do you understand by POM? What does it contain? What are the minimum requirements of POM?
+70. What is the location where maven dependencies are downloaded?
+71. How to exclude a dependency in maven?
+72. What is GIT? Why is its importance?
+73. What is difference in git & github?
+74. What are advantages of git?
+75. What do you mean by repository?
+76. Can you explain sequence of commands used to import new project from git repository to local machine, make the required changes in code, committing & updating the changes on remote repository?
+77. Explain commonly used git commands
+78. What is difference in git diff & git status
+79. What is staging area?
+80. How to work with git using git gui, git bash & ide like eclipse?
+81. What is the purpose of branching in git? Can you explain any branching strategy?
+82. How conflicts can be resolved in git?
+83. What is difference between git pull & fetch?
+84. What is difference in git remote & git clone?
+85. What is function of git config?
+86. How to merge a branch to another branch?
+87. What is Jenkins? Usage & advantages?
+88. What is continuous integration? or CI/CD?
+89. How to configure maven & git setting in Jenkins?
+90. Mention some important Jenkins plugins
+91. How to configure simple project/task/job in Jenkins?
+92. How to execute maven project test cases from github repository?
+93. What is Jenkins pipeline?
+94. What is devOps?
+95. What is agile? Advantages of agile methodology?
