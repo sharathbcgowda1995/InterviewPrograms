@@ -27,40 +27,31 @@ public class AverageOfPrimeNumbers {
 		}else{
 			return false;
 		}
-
 	}
 
+
 	public static double findAverage(int sum, int totalElements) {
-
 		return (double) sum/totalElements;
-
 	}
 
 
 	public static double findAvergaeOfPrimeNumbers(int[] arr) {
 
-
 		for (int i : arr) {
-
 			if (findPrimeNumber(i)) {
-
 				totalSum = totalSum + i;
 				totalElements++;
-
 			}
-
 		}
-
 		return findAverage(totalSum,totalElements);
-
-
 	}
+
 
 	public static void main(String[] args) {
 
 		int[] arr = {1,2,3,5,23,12,233};
-
 		System.out.println(findAvergaeOfPrimeNumbers(arr));
+
 	}
 
 }
