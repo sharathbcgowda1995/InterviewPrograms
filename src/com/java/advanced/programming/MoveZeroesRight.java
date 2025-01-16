@@ -18,13 +18,18 @@ public class MoveZeroesRight {
 
 		for (int i : arr) {
 			if (i != 0) {
-				arr[counter++] = i;
+				arr[counter] = i;
+				counter++;
+				//arr[counter++] = i;
 			}
 		}
 
 		while(counter< arr.length) {
 
-			arr[counter++] = 0;
+			arr[counter] = 0;
+			counter++;
+			//arr[counter++] = 0;
+
 		}
 
 		for (int i : arr) {

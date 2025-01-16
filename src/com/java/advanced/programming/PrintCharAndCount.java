@@ -3,7 +3,7 @@ package com.java.advanced.programming;
 public class PrintCharAndCount {
 
     public static void findCharCount(String word) {
-        if (word == null || word.isEmpty()) {
+        if (word == null || word.isEmpty()) { 
             System.out.println("Input string is empty or null");
             return;
         }
@@ -30,7 +30,7 @@ public class PrintCharAndCount {
     }
 
     public static void main(String[] args) {
-        String name = "AABBCCCAA";
+        String name = "AABBCCCAAs";
         findCharCount(name);  // Expected output: "A2B2C3A2"
     }
 }

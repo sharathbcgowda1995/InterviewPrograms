@@ -23,12 +23,12 @@ public class QueueUsingArray {
             return -1;  // Return a special value to indicate the queue is empty
         } else {
             int frontElement = arr[0];
+            top--;  // Decrease 'top' after removing the front element
             
             // Shift elements to the left to maintain the queue order
             for (int i = 0; i < top; i++) {
                 arr[i] = arr[i + 1];
             }
-            top--;  // Decrease 'top' after removing the front element
             return frontElement;
         }
     }

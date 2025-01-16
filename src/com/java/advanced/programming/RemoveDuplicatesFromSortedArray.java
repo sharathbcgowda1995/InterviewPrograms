@@ -13,13 +13,12 @@ public class RemoveDuplicatesFromSortedArray {
 			set.add(values);
 
 		}
-
+		
 		for (Integer integer : set) {
 
 			System.out.println(integer);
 
 		}
-
 	}
 
 	public static void main(String[] args) {
