@@ -7,7 +7,7 @@ package com.java.advanced.programming;
 
 public class FirstNonRepeatingCharacter {
 
-	public static void findFirstNonRepeatingCharacter(String name) {
+	public static void FirstNonRepeatingCharacter(String name) {
 
 		for(int i =0;i < name.length();i++) {
 
@@ -33,7 +33,7 @@ public class FirstNonRepeatingCharacter {
 		
 		String name = "ABBACDDBCsSs";
 
-		FirstNonRepeatingCharacter.findFirstNonRepeatingCharacter(name);
+		FirstNonRepeatingCharacter.FirstNonRepeatingCharacter(name);
 	}
 
 }
