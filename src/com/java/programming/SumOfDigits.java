@@ -11,11 +11,12 @@ public class SumOfDigits {
 
 		int sum = 0;
 
-		while (numbers > 0) {
-			sum += numbers % 10;
+		while (numbers != 0) {
+			int digit =  numbers%10;
+			sum = sum + digit;
 			numbers=numbers/10;
 		}
-		
+
 		System.out.println("Sum of the enetered number is : " + sum);
 	}
 

@@ -4,25 +4,25 @@ public class reversingWithoutChangingTheSpaceAndSpecialChar {
 
 	public static void main(String[] args) {
 
-		String word = " Sharath BC Gowda";
+		String word = " Sharath BC Gowda !";
 
 		char[] charArr = word.toCharArray();
 
-		int i = 0;
+		int start = 0;
 
-		int j = word.length() - 1;
+		int end = word.length() - 1;
 
-		while (i < j) {
-			if (!Character.isAlphabetic(charArr[i])) {
-				i++;
-			} else if (!Character.isAlphabetic(charArr[j])) {
-				j--;
+		while (start < end) {
+			if (!Character.isAlphabetic(charArr[start])) {
+				start++;
+			} else if (!Character.isAlphabetic(charArr[end])) {
+				end--;
 			} else {
-				char temp = charArr[i];
-				charArr[i] = charArr[j];
-				charArr[j] = temp;
-				i++;
-				j--;
+				char temp = charArr[start];
+				charArr[start] = charArr[end];
+				charArr[end] = temp;
+				start++;
+				end--;
 			}
 
 		}
