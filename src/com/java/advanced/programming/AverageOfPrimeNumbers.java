@@ -46,12 +46,9 @@ public class AverageOfPrimeNumbers {
 		return findAverage(totalSum,totalElements);
 	}
 
-
 	public static void main(String[] args) {
-
 		int[] arr = {1,2,3,5,23,12,233};
 		System.out.println(findAvergaeOfPrimeNumbers(arr));
-
 	}
 
 }
