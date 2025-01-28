@@ -70,3 +70,9 @@ if (arr[j] < arr[j+1]) {
 // swap logic
 }}}
 
+22. Add only digits in a string.
+for(char c : arr){
+if(Character.isDigit(c)){
+sum = sum + Character.getNumericValue(c);
+}
+
