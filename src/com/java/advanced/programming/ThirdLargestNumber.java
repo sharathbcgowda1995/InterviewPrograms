@@ -19,12 +19,15 @@ public class ThirdLargestNumber {
 			}
 		}
 
+		for(int i : arr) {
+			System.out.println(i);
+		}
 		return arr[2];
 
 	}
 
 	public static void main(String[] args) {
-		int[] arr =  {1,2,3,4,5};
+		int[] arr =  {1,4,5,3,2};
 
 		System.out.println(findThirdLargestNumber(arr));
 

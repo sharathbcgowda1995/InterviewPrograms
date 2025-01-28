@@ -1,0 +1,72 @@
+1. find average of the prime numbers.
+int[] arr = {1,2,3,5,23,12,233};
+
+2. balanced bracket.
+"[{()}]"
+
+3. binary search on sorted array.
+int[] arr = {1, 2, 3, 4, 5, 6, 7, 8, 9}; int target = 5;
+
+4. find common elements in array.
+int[] arr1 = {1, 2, 3, 4, 5}; int[] arr2 = {4, 5, 6, 7, 8};
+
+5. find missing number.
+int[] arr = {1,2,4,6};
+
+6. find single digit.
+int num = 889; int sum = findSum(num); while(sum>10) { }
+
+7. find all the substring in string "abc".
+
+8. find occurences of the characters and words in string.
+String strWord ="I am Java developer I am proud of it";
+String strCharacters = "Sharath";
+
+9. find first non-repeating char.
+String name = "ABBACDDBCsSs";
+
+10. find group of anagrams.
+String[] strs = {"eat", "tea", "tan", "ate", "nat", "bat"};
+
+11. find most occurred key in a map.
+String word = "Hello world"; l
+
+12. move right and left 1,0 & even and odd
+int[] evenOdd = {1,2,3,4,5,67,8,9,0,10};
+int[] zeroesOnes = {1,1,0,1,0,1,0};
+
+13. move all zeroes to right.
+int[] array_values = {0,1,2,0,3,4};
+
+14. print the char and its count in order.
+String name = "AABBCCCAAs"; // Expected output: "A2B2C3A2"
+
+15. print pattern - *
+
+16. implementation of queue using array.
+private int lengthOfArray = 5;
+private int top = -1;
+int[] arr = new int[lengthOfArray];
+
+17. find the factorial using the recursion.
+return number * findFactorial(number - 1);
+
+18. remove duplicates from array.
+int[] arr = {1,22,22,33,44,44,54,67,87};
+
+19. search on rotated sorted array.
+int[] arr = {4, 5, 6, 7, 1, 2, 3};
+int target = 6;
+int index = search(arr, target);
+
+20. second largest and smallest number.
+int firstLargest = Integer.MIN_VALUE, secondLargest = Integer.MIN_VALUE;
+int firstSmallest = Integer.MAX_VALUE,secondSmallest = Integer.MAX_VALUE;
+
+21. Third largest number. (Bubble sort with the descending approach, same can be used for the ascending as well)
+for (int i = 0; i < arr.length-1 ; i++) {
+for (int j = 0 ; j < arr.length - 1 ; j++) {
+if (arr[j] < arr[j+1]) {
+// swap logic
+}}}
+
