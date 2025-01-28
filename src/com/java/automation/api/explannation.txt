@@ -1,0 +1,362 @@
+- Why Getters and Setters Are Needed in POJOs
+1. For Serialization (POJO to JSON):
+When using frameworks like Jackson or Gson, the library calls the getter methods to access the values of private fields in the POJO. It then serializes these values into a JSON string.
+
+Example:
+Given this POJO:
+public class User {
+    private String name;
+    private String email;
+    private int age;
+
+    // Getters
+    public String getName() {
+        return name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    // Constructor
+    public User(String name, String email, int age) {
+        this.name = name;
+        this.email = email;
+        this.age = age;
+    }
+}
+And this code:
+
+User user = new User("John Doe", "johndoe@example.com", 30);
+
+Response response = given()
+    .header("Content-Type", "application/json")
+    .body(user) // Serialize POJO to JSON
+    .post("/users");
+Jackson or Gson will use the getName(), getEmail(), and getAge() methods to generate the following JSON payload:
+{
+  "name": "John Doe",
+  "email": "johndoe@example.com",
+  "age": 30
+}
+Without getters, the library cannot access the private fields, and serialization will fail.
+
+2. For Deserialization (JSON to POJO):
+When converting a JSON string into a POJO, the library (like Jackson or Gson) calls the setter methods to populate the fields with values from the JSON.
+
+Example:
+If you receive this JSON response:
+{
+  "name": "Jane Doe",
+  "email": "janedoe@example.com",
+  "age": 25
+}
+
+And this code:
+User user = new ObjectMapper().readValue(jsonResponse, User.class);
+
+Jackson will use the setName(), setEmail(), and setAge() methods to populate the User object:
+User user = new User();
+user.setName("Jane Doe");
+user.setEmail("janedoe@example.com");
+user.setAge(25);
+
+- Roles of Getters and Setters
+>> Getter	Used during serialization to read field values and convert them to JSON.
+>> Setter	Used during deserialization to set field values from the JSON.
+
+- Why Do We Use Deserialization?
+Deserialization is used to convert JSON (or other data formats like XML) into a Java object (POJO).
+It allows applications to interpret and use structured data sent over the network, from a file, or received from an API.
+Without deserialization, working with raw JSON strings would be cumbersome, error-prone, and less efficient.
+
+1. Converting Data into Usable Form
+JSON response :
+{ "name": "John", "email": "john@example.com", "age": 30 }
+
+After deserialization:
+User user = new User("John", "john@example.com", 30);
+
+Now, you can access the data like:
+System.out.println(user.getName());
+
+2. Simplifies Application Development
+- Instead of manually parsing JSON and extracting fields, deserialization automates the process.
+- Libraries like Jackson or Gson handle the heavy lifting, reducing boilerplate code and improving readability.
+
+
+Without Deserialization (Manual Parsing Example):
+String json = "{ \"name\": \"John\", \"email\": \"john@example.com\", \"age\": 30 }";
+
+JSONObject jsonObject = new JSONObject(json);
+String name = jsonObject.getString("name");
+String email = jsonObject.getString("email");
+int age = jsonObject.getInt("age");
+
+With Deserialization:
+User user = objectMapper.readValue(json, User.class);
+
+3. Type Safety
+- when deserializing JSON into a POJO, the structure and data types are validated.
+- If the JSON format does not match the expected POJO structure, you’ll get compile-time or runtime errors,
+helping ensure correctness.
+
+public class User {
+    private String name;
+    private String email;
+    private int age;
+}
+If the API returns an invalid JSON (e.g., "age": "thirty" instead of an integer), deserialization will throw an error.
+
+4. Handling Complex Data Structures :
+Example of Nested JSON:
+{
+    "name": "John Doe",
+    "email": "john@example.com",
+    "address": {
+        "street": "123 Main St",
+        "city": "New York",
+        "zipcode": "10001"
+    }
+}
+Corresponding POJO:
+public class User {
+    private String name;
+    private String email;
+    private Address address;
+
+    // Getters and setters
+}
+
+public class Address {
+    private String street;
+    private String city;
+    private String zipcode;
+
+    // Getters and setters
+}
+
+- How to handle the complex pojos for the payload
+
+{
+    "name": "John Doe",
+    "email": "john@example.com",
+    "address": {
+        "street": "123 Main St",
+        "city": "New York",
+        "zipcode": "10001"
+    }
+"skills": ["Java","Python"]
+}
+
+Address class  :
+
+public class Address {
+    private String street;
+    private String city;
+    private String zipcode;
+
+    // Getters and Setters
+    public String getStreet() {
+        return street;
+    }
+
+    public void setStreet(String street) {
+        this.street = street;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
+    }
+
+    public String getZipcode() {
+        return zipcode;
+    }
+
+    public void setZipcode(String zipcode) {
+        this.zipcode = zipcode;
+    }
+}
+
+USER CALSS :
+
+import java.util.List;
+public class User {
+    private String name;
+    private String email;
+    private Address address;
+    private List<String> skills;
+
+    // Getters and Setters
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public Address getAddress() {
+        return address;
+    }
+
+    public void setAddress(Address address) {
+        this.address = address;
+    }
+
+    public List<String> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(List<String> skills) {
+        this.skills = skills;
+    }
+
+    public User(String name, String email, String[] skills, Address address) {
+            this.name = name;
+            this.email = email;
+            this.skills = skills;
+            this.address = address;
+        }
+}
+
+Actual Test class :
+
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
+
+public class Main {
+    public static void main(String[] args) {
+        // Create an instance of Address POJO
+        Address address = new Address();
+        address.setStreet("123 Main St");
+        address.setCity("New York");
+        address.setZipcode("10001");
+
+        // Create an instance of User POJO and set its properties
+        // Pass skills as an array, and address as the Address object
+        User user = new User("Sharath", "sharath.bc@gmail.com",
+                             new String[] {"Java", "Python"},
+                             address);
+
+        // Perform a POST request with the POJO as the payload
+        Response response = RestAssured.given()
+            .header("Content-Type", "application/json")
+            .body(user)  // Serialize POJO to JSON automatically
+            .post("https://your-api-url.com/users");
+
+        // Print the response body
+        System.out.println("Response Body: " + response.getBody().asString());
+
+        // Optionally, validate the response
+        response.then().statusCode(200); // Check if the status code is 200 OK
+    }
+}
+
+- Using OAuth1 and OAuth2 in APIs
+> Both OAuth1 and OAuth2 are widely used for securing APIs, and different services have different requirements for which version of OAuth to use.
+
+1. OAuth1 Example:
+  In OAuth1, you usually need to use a library to handle the signing of requests. For example,
+  using Rest Assured or a similar HTTP client library with OAuth1 might look like this:
+
+import io.restassured.RestAssured;
+import io.restassured.authentication.OAuthSignature;
+import io.restassured.authentication.OAuth1;
+import io.restassured.response.Response;
+
+public class OAuth1Example {
+    public static void main(String[] args) {
+        // Set up OAuth1 credentials
+        OAuth1 oauth1 = new OAuth1("consumerKey", "consumerSecret", "accessToken", "accessTokenSecret");
+
+        // Perform API request with OAuth1
+        Response response = RestAssured.given()
+            .auth().oauth(oauth1)
+            .get("https://api.example.com/protected-resource");
+
+        // Print the response body
+        System.out.println(response.getBody().asString());
+    }
+}
+
+2. OAuth2 Example:
+   OAuth2 is simpler and usually requires you to obtain an access token from the authorization server.
+   Here’s an example using Rest Assured to make a request with an OAuth2 token:
+
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
+
+public class OAuth2Example {
+    public static void main(String[] args) {
+        // Set up OAuth2 access token
+        String accessToken = "your_access_token_here"; // We get this token valid for few sec from other API called
+
+        // Perform API request with OAuth2
+        Response response = RestAssured.given()
+            .header("Authorization", "Bearer " + accessToken)
+            .get("https://api.example.com/protected-resource");
+
+        // Print the response body
+        System.out.println(response.getBody().asString());
+    }
+}
+
+> Features of	OAuth1	OAuth2
+Security	- More secure (signature-based),	Uses bearer tokens (less secure if token is exposed)
+Complexity	- More complex (requires signing each request),	Simpler (uses access and refresh tokens)
+Flexibility	- Less flexible (mostly used with web apps),	More flexible (supports web, mobile, SPAs)
+Token Type	- Access Token + Secret (signed requests),	Access Token + (optional) Refresh Token
+Flow Types	- One main flow (Request Token → Access Token),	Multiple flows (Authorization Code, Implicit, Client Credentials, Resource Owner Password Credentials)
+
+
+- Token-Based Authentication with Rest Assured
+> Token-based authentication is a method where the client uses an access token to authenticate requests to a server.
+The server validates the token and allows access to protected resources.
+
+> Token-Based Authentication is a more general concept, often used in APIs (RESTful services).
+The token could come from OAuth2, but it could also be a simpler token, such as a JWT, which doesn't require OAuth2.
+
+Steps:
+Login to get the token (POST request).
+Use the token in subsequent requests (GET request).
+
+import io.restassured.RestAssured;
+import io.restassured.response.Response;
+
+public class TokenAuthenticationExample {
+    public static void main(String[] args) {
+        // Login to get the access token (Step 1)
+        Response loginResponse = RestAssured.given()
+            .contentType("application/json")
+            .body("{\"username\": \"john_doe\", \"password\": \"password123\"}")
+            .post("https://api.example.com/login");
+
+        // Extract the access token from the response
+        String accessToken = loginResponse.jsonPath().getString("access_token");
+
+        // Use the access token to access protected resource
+        Response resourceResponse = RestAssured.given()
+            .header("Authorization", "Bearer " + accessToken)
+            .get("https://api.example.com/protected-resource");
+
+        // Print the response
+        System.out.println("Response Body: " + resourceResponse.getBody().asString());
+    }
+}
