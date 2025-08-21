@@ -10,7 +10,7 @@ public class BinarySearchOnSortedArray {
 
             if (arr[mid] == target) {
                 return mid;  // Target found, return the index
-            } else if (arr[mid] < target) {
+            } else if (target > arr[mid]) {
                 start = mid + 1;  // Move the start pointer
             } else {
                 end = mid - 1;  // Move the end pointer
