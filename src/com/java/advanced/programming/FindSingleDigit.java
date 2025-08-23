@@ -7,9 +7,11 @@ public class FindSingleDigit {
 
 	public static int findSum(int number) {
 		int sum = 0;
+		int digit =0;
 
-		while(number != 0) {
-			sum =  sum+(number%10);
+		while(number > 0) {
+			digit = (number%10);
+			sum =  sum + digit;
 			number = number/10;
 		}
 

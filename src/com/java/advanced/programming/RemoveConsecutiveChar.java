@@ -13,7 +13,9 @@ public class RemoveConsecutiveChar {
 		String newWord = "";
 
 		for (int i = 0; i < wordArray.length; i++) {
-			if (previousChar != wordArray[i]) {
+			if (previousChar == wordArray[i]) {
+				// Do nothing
+			}else {
 				newWord = newWord + wordArray[i];
 				previousChar = wordArray[i];
 			}
