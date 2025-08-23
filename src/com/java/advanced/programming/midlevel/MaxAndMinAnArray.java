@@ -19,7 +19,7 @@ public class MaxAndMinAnArray {
 		System.out.println("Maximum number is : " + max);
 
 		for (int i = 1; i < arr.length; i++) {
-			if (arr[i] <= min) {
+			if (arr[i] < min) {
 				min = arr[i];
 			}
 		}

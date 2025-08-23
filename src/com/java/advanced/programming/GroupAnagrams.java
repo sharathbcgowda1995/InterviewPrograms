@@ -41,5 +41,6 @@ public class GroupAnagrams {
 		for(Map.Entry<String, List<String>> mapvalue : groupOfAnagrams.entrySet()) {
 			System.out.println(mapvalue.getValue());
 		}
+		System.out.println(groupOfAnagrams);
 	}
 }
