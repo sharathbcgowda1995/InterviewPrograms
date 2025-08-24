@@ -1,0 +1,1805 @@
+src
+ └── test
+     ├── java
+     │    ├── base
+     │    │     └── BaseTest.java
+     │    ├── model
+     │    │     └── StatusResponse.java
+     │    ├── tests
+     │    │     └── StatusApiTest.java
+     │    └── utils
+     │          └── AuthUtil.java
+     └── resources
+           └── config.properties
+
+package base;
+
+import io.restassured.RestAssured;
+import org.testng.annotations.BeforeClass;
+
+public class BaseTest {
+
+    @BeforeClass
+    public void setup() {
+        RestAssured.baseURI = "https://plivo.com";
+    }
+}
+
+
+package utils;
+
+import io.restassured.specification.RequestSpecification;
+
+import static io.restassured.RestAssured.given;
+
+public class AuthUtil {
+
+    // Basic Auth
+    public static RequestSpecification withBasicAuth(String user, String pass) {
+        return given().auth().preemptive().basic(user, pass);
+    }
+
+    // Bearer Token Auth
+    public static RequestSpecification withBearerToken(String token) {
+        return given().auth().oauth2(token);
+    }
+
+    // No Auth
+    public static RequestSpecification withoutAuth() {
+        return given();
+    }
+}
+
+
+package model;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+public class StatusResponse {
+
+    @JsonProperty("company")
+    private String company;
+
+    @JsonProperty("old")
+    private int old;
+
+    @JsonProperty("Stable")
+    private String stable;
+
+    // Getters and Setters
+    public String getCompany() {
+        return company;
+    }
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public int getOld() {
+        return old;
+    }
+    public void setOld(int old) {
+        this.old = old;
+    }
+
+    public String getStable() {
+        return stable;
+    }
+    public void setStable(String stable) {
+        this.stable = stable;
+    }
+}
+
+
+package tests;
+
+import base.BaseTest;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import model.StatusResponse;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+import utils.AuthUtil;
+
+import static io.restassured.RestAssured.given;
+
+public class StatusApiTest extends BaseTest {
+
+    @Test
+    public void testStatusApi() {
+        Response response =
+            AuthUtil.withoutAuth()
+                .pathParam("product", 2)
+                .pathParam("profit", "yes")
+                .queryParam("flag", true)
+                .queryParam("join", "no")
+                .header("Content-Type", "application/json")
+                .when()
+                .get("/Status/{product}/{profit}")
+                .then()
+                .log().all()
+                .extract()
+                .response();
+
+        // ✅ Validate Status Code
+        Assert.assertEquals(response.getStatusCode(), 200, "Status code mismatch");
+
+        // ✅ Deserialize Response to POJO
+        StatusResponse statusResponse = response.as(StatusResponse.class);
+        Assert.assertEquals(statusResponse.getCompany(), "plivo");
+        Assert.assertEquals(statusResponse.getOld(), 10);
+        Assert.assertEquals(statusResponse.getStable(), "no");
+
+        // ✅ Validate Response Header
+        Assert.assertEquals(response.getHeader("Content-Type"), "application/json");
+
+        // ✅ Validate Response Time (less than 2s for example)
+        Assert.assertTrue(response.getTime() < 2000, "Response took too long!");
+    }
+}
+
+
+baseUrl=https://plivo.com
+token=your_token_here
+
+
+-------------------------
+
+src
+ └── test
+     ├── java
+     │    ├── base
+     │    │     └── BaseTest.java
+     │    ├── model
+     │    │     └── StatusResponse.java
+     │    ├── tests
+     │    │     └── StatusApiTest.java
+     │    ├── utils
+     │    │     ├── AuthUtil.java
+     │    │     ├── AwsUtil.java
+     │    │     ├── MongoUtil.java
+     │    │     └── KafkaUtil.java
+     │    └── service
+     │          └── StatusService.java
+     └── resources
+           └── config.properties
+
+
+ package utils;
+
+ import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+ import software.amazon.awssdk.services.secretsmanager.SecretsManagerClient;
+ import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueRequest;
+ import software.amazon.awssdk.services.secretsmanager.model.GetSecretValueResponse;
+
+ public class AwsUtil {
+
+     private static final SecretsManagerClient client =
+             SecretsManagerClient.builder()
+                     .credentialsProvider(DefaultCredentialsProvider.create())
+                     .build();
+
+     public static String getSecret(String secretName) {
+         GetSecretValueResponse value = client.getSecretValue(
+                 GetSecretValueRequest.builder().secretId(secretName).build()
+         );
+         return value.secretString();
+     }
+ }
+
+
+package utils;
+
+import com.mongodb.client.MongoClient;
+import com.mongodb.client.MongoClients;
+import com.mongodb.client.MongoDatabase;
+import org.bson.Document;
+
+public class MongoUtil {
+
+    private static final String uri = "mongodb://localhost:27017";
+
+    public static MongoDatabase getDatabase(String dbName) {
+        MongoClient client = MongoClients.create(uri);
+        return client.getDatabase(dbName);
+    }
+
+    public static Document findOne(String dbName, String collection, String key, Object value) {
+        return getDatabase(dbName)
+                .getCollection(collection)
+                .find(new Document(key, value))
+                .first();
+    }
+}
+
+
+ package utils;
+
+ import org.apache.kafka.clients.consumer.ConsumerRecord;
+ import org.apache.kafka.clients.consumer.KafkaConsumer;
+ import org.apache.kafka.clients.producer.KafkaProducer;
+ import org.apache.kafka.clients.producer.ProducerRecord;
+
+ import java.time.Duration;
+ import java.util.Collections;
+ import java.util.Properties;
+
+ public class KafkaUtil {
+
+     public static void publish(String topic, String key, String message) {
+         Properties props = new Properties();
+         props.put("bootstrap.servers", "localhost:9092");
+         props.put("key.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+         props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer");
+
+         KafkaProducer<String, String> producer = new KafkaProducer<>(props);
+         producer.send(new ProducerRecord<>(topic, key, message));
+         producer.close();
+     }
+
+     public static ConsumerRecord<String, String> consume(String topic) {
+         Properties props = new Properties();
+         props.put("bootstrap.servers", "localhost:9092");
+         props.put("group.id", "test-group");
+         props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+         props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+
+         KafkaConsumer<String, String> consumer = new KafkaConsumer<>(props);
+         consumer.subscribe(Collections.singletonList(topic));
+         return consumer.poll(Duration.ofSeconds(5)).iterator().next();
+     }
+ }
+
+
+
+ @Test
+ public void testStatusApiWithAwsMongoKafka() {
+     // Fetch token from AWS Secrets Manager
+     String token = AwsUtil.getSecret("plivo-api-token");
+
+     Response response =
+         AuthUtil.withBearerToken(token)
+             .pathParam("product", 2)
+             .pathParam("profit", "yes")
+             .queryParam("flag", true)
+             .queryParam("join", "no")
+             .header("Content-Type", "application/json")
+             .when()
+             .get("/Status/{product}/{profit}")
+             .then()
+             .extract()
+             .response();
+
+     // Validate API response
+     Assert.assertEquals(response.getStatusCode(), 200);
+
+     // Cross-check Mongo entry
+     Document doc = MongoUtil.findOne("plivoDB", "statusCollection", "company", "plivo");
+     Assert.assertNotNull(doc);
+
+     // Publish Kafka event after success
+     KafkaUtil.publish("status-events", "company", "Plivo API Success");
+ }
+
+
+------
+
+{
+  "company": {
+    "name": "Plivo",
+    "location": {
+      "city": "Bangalore",
+      "country": "India",
+      "office": {
+        "id": "BLR-01",
+        "floor": 5,
+        "departments": [
+          {
+            "name": "Engineering",
+            "head": "Rajesh Kumar",
+            "employees": [
+              {
+                "id": 101,
+                "name": "Anita Sharma",
+                "skills": ["Java", "Spring Boot", "Kafka"],
+                "projects": [
+                  {
+                    "projectId": "P-9876",
+                    "title": "Voice API Enhancements",
+                    "status": "In Progress",
+                    "milestones": [
+                      { "id": "M1", "task": "Setup infra", "completed": true },
+                      { "id": "M2", "task": "Implement API", "completed": false }
+                    ]
+                  }
+                ]
+              },
+              {
+                "id": 102,
+                "name": "Vikas Mehta",
+                "skills": ["Python", "MongoDB", "AWS"],
+                "projects": []
+              }
+            ]
+          },
+          {
+            "name": "Support",
+            "head": "Meera Joshi",
+            "employees": []
+          }
+        ]
+      }
+    }
+  },
+  "financials": {
+    "profit": true,
+    "revenue": {
+      "2023": 1200000,
+      "2024": 1600000
+    },
+    "expenses": {
+      "operations": 400000,
+      "salaries": 500000,
+      "marketing": 200000
+    }
+  },
+  "status": {
+    "old": 10,
+    "stable": false,
+    "lastChecked": "2025-08-24T12:30:45Z"
+  },
+  "integrations": [
+    {
+      "service": "AWS",
+      "actions": ["S3 Upload", "SecretsManager"],
+      "status": "active"
+    },
+    {
+      "service": "Kafka",
+      "topics": ["events", "status-updates"],
+      "status": "active"
+    },
+    {
+      "service": "MongoDB",
+      "databases": ["plivoDB", "logsDB"],
+      "status": "inactive"
+    }
+  ]
+}
+
+
+package model;
+
+import java.util.List;
+import java.util.Map;
+
+public class ComplexResponse {
+
+    private Company company;
+    private Financials financials;
+    private Status status;
+    private List<Integration> integrations;
+
+    // ===== Getters & Setters =====
+    public Company getCompany() {
+        return company;
+    }
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
+    public Financials getFinancials() {
+        return financials;
+    }
+    public void setFinancials(Financials financials) {
+        this.financials = financials;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    public List<Integration> getIntegrations() {
+        return integrations;
+    }
+    public void setIntegrations(List<Integration> integrations) {
+        this.integrations = integrations;
+    }
+
+    // ================= Nested Classes =================
+
+    public static class Company {
+        private String name;
+        private Location location;
+
+        public String getName() {
+            return name;
+        }
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public Location getLocation() {
+            return location;
+        }
+        public void setLocation(Location location) {
+            this.location = location;
+        }
+    }
+
+    public static class Location {
+        private String city;
+        private String country;
+        private Office office;
+
+        public String getCity() {
+            return city;
+        }
+        public void setCity(String city) {
+            this.city = city;
+        }
+
+        public String getCountry() {
+            return country;
+        }
+        public void setCountry(String country) {
+            this.country = country;
+        }
+
+        public Office getOffice() {
+            return office;
+        }
+        public void setOffice(Office office) {
+            this.office = office;
+        }
+    }
+
+    public static class Office {
+        private String id;
+        private int floor;
+        private List<Department> departments;
+
+        public String getId() {
+            return id;
+        }
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public int getFloor() {
+            return floor;
+        }
+        public void setFloor(int floor) {
+            this.floor = floor;
+        }
+
+        public List<Department> getDepartments() {
+            return departments;
+        }
+        public void setDepartments(List<Department> departments) {
+            this.departments = departments;
+        }
+    }
+
+    public static class Department {
+        private String name;
+        private String head;
+        private List<Employee> employees;
+
+        public String getName() {
+            return name;
+        }
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public String getHead() {
+            return head;
+        }
+        public void setHead(String head) {
+            this.head = head;
+        }
+
+        public List<Employee> getEmployees() {
+            return employees;
+        }
+        public void setEmployees(List<Employee> employees) {
+            this.employees = employees;
+        }
+    }
+
+    public static class Employee {
+        private int id;
+        private String name;
+        private List<String> skills;
+        private List<Project> projects;
+
+        public int getId() {
+            return id;
+        }
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public List<String> getSkills() {
+            return skills;
+        }
+        public void setSkills(List<String> skills) {
+            this.skills = skills;
+        }
+
+        public List<Project> getProjects() {
+            return projects;
+        }
+        public void setProjects(List<Project> projects) {
+            this.projects = projects;
+        }
+    }
+
+    public static class Project {
+        private String projectId;
+        private String title;
+        private String status;
+        private List<Milestone> milestones;
+
+        public String getProjectId() {
+            return projectId;
+        }
+        public void setProjectId(String projectId) {
+            this.projectId = projectId;
+        }
+
+        public String getTitle() {
+            return title;
+        }
+        public void setTitle(String title) {
+            this.title = title;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+        public void setStatus(String status) {
+            this.status = status;
+        }
+
+        public List<Milestone> getMilestones() {
+            return milestones;
+        }
+        public void setMilestones(List<Milestone> milestones) {
+            this.milestones = milestones;
+        }
+    }
+
+    public static class Milestone {
+        private String id;
+        private String task;
+        private boolean completed;
+
+        public String getId() {
+            return id;
+        }
+        public void setId(String id) {
+            this.id = id;
+        }
+
+        public String getTask() {
+            return task;
+        }
+        public void setTask(String task) {
+            this.task = task;
+        }
+
+        public boolean isCompleted() {
+            return completed;
+        }
+        public void setCompleted(boolean completed) {
+            this.completed = completed;
+        }
+    }
+
+    public static class Financials {
+        private boolean profit;
+        private Map<String, Integer> revenue;
+        private Map<String, Integer> expenses;
+
+        public boolean isProfit() {
+            return profit;
+        }
+        public void setProfit(boolean profit) {
+            this.profit = profit;
+        }
+
+        public Map<String, Integer> getRevenue() {
+            return revenue;
+        }
+        public void setRevenue(Map<String, Integer> revenue) {
+            this.revenue = revenue;
+        }
+
+        public Map<String, Integer> getExpenses() {
+            return expenses;
+        }
+        public void setExpenses(Map<String, Integer> expenses) {
+            this.expenses = expenses;
+        }
+    }
+
+    public static class Status {
+        private int old;
+        private boolean stable;
+        private String lastChecked;
+
+        public int getOld() {
+            return old;
+        }
+        public void setOld(int old) {
+            this.old = old;
+        }
+
+        public boolean isStable() {
+            return stable;
+        }
+        public void setStable(boolean stable) {
+            this.stable = stable;
+        }
+
+        public String getLastChecked() {
+            return lastChecked;
+        }
+        public void setLastChecked(String lastChecked) {
+            this.lastChecked = lastChecked;
+        }
+    }
+
+    public static class Integration {
+        private String service;
+        private List<String> actions;
+        private List<String> topics;
+        private List<String> databases;
+        private String status;
+
+        public String getService() {
+            return service;
+        }
+        public void setService(String service) {
+            this.service = service;
+        }
+
+        public List<String> getActions() {
+            return actions;
+        }
+        public void setActions(List<String> actions) {
+            this.actions = actions;
+        }
+
+        public List<String> getTopics() {
+            return topics;
+        }
+        public void setTopics(List<String> topics) {
+            this.topics = topics;
+        }
+
+        public List<String> getDatabases() {
+            return databases;
+        }
+        public void setDatabases(List<String> databases) {
+            this.databases = databases;
+        }
+
+        public String getStatus() {
+            return status;
+        }
+        public void setStatus(String status) {
+            this.status = status;
+        }
+    }
+}
+
+
+package tests;
+
+import base.BaseTest;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import model.ComplexResponse;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+import static io.restassured.RestAssured.given;
+
+public class ComplexApiTest extends BaseTest {
+
+    @Test
+    public void testComplexJsonResponse() {
+        // Simulate hitting endpoint (you can replace with actual API)
+        Response response =
+                given()
+                    .header("Content-Type", "application/json")
+                    .when()
+                    .get("/complexResponse")   // <- replace with actual endpoint
+                    .then()
+                    .log().all()
+                    .extract()
+                    .response();
+
+        // ✅ Validate status code
+        Assert.assertEquals(response.statusCode(), 200);
+
+        // ✅ Validate response header
+        Assert.assertEquals(response.getContentType(), ContentType.JSON.toString());
+
+        // ✅ Validate response time
+        Assert.assertTrue(response.time() < 3000, "Response took too long!");
+
+        // ✅ Deserialize into POJO
+        ComplexResponse complex = response.as(ComplexResponse.class);
+
+        // ----- Example Validations -----
+        // Company info
+        Assert.assertEquals(complex.getCompany().getName(), "Plivo");
+        Assert.assertEquals(complex.getCompany().getLocation().getCountry(), "India");
+
+        // Nested employee
+        ComplexResponse.Employee emp =
+            complex.getCompany().getLocation().getOffice().getDepartments().get(0).getEmployees().get(0);
+
+        Assert.assertEquals(emp.getName(), "Anita Sharma");
+        Assert.assertTrue(emp.getSkills().contains("Kafka"));
+
+        // Project milestone
+        ComplexResponse.Milestone m1 = emp.getProjects().get(0).getMilestones().get(0);
+        Assert.assertEquals(m1.getTask(), "Setup infra");
+        Assert.assertTrue(m1.isCompleted());
+
+        // Financials
+        Assert.assertTrue(complex.getFinancials().isProfit());
+        Assert.assertEquals(complex.getFinancials().getRevenue().get("2024").intValue(), 1600000);
+
+        // Integrations
+        Assert.assertEquals(complex.getIntegrations().get(0).getService(), "AWS");
+        Assert.assertTrue(complex.getIntegrations().get(1).getTopics().contains("status-updates"));
+    }
+}
+
+
+------
+AUTHENTICATIONS :
+
+given()
+    .when()
+    .get("https://api.publicapis.org/entries")
+    .then()
+    .statusCode(200);
+
+
+given()
+    .auth()
+    .basic("username", "password")
+    .when()
+    .get("https://api.example.com/user/profile")
+    .then()
+    .statusCode(200);
+
+Authorization: Basic dXNlcm5hbWU6cGFzc3dvcmQ=
+
+
+-
+
+given()
+    .auth()
+    .preemptive()
+    .basic("username", "password")
+    .when()
+    .get("https://api.example.com/user/profile")
+    .then()
+    .statusCode(200);
+
+given()
+    .auth()
+    .digest("username", "password")
+    .when()
+    .get("https://api.example.com/secure-data")
+    .then()
+    .statusCode(200);
+
+
+given()
+    .auth()
+    .oauth2("your_token_here")
+    .when()
+    .get("https://api.example.com/account")
+    .then()
+    .statusCode(200);
+
+Authorization: Bearer your_token_here
+
+🔐 6. API Key Authentication
+
+Instead of username/password, an API key is provided.
+API key can be passed as:
+- Header
+- Query param
+given()
+    .header("x-api-key", "your_api_key_here")
+    .when()
+    .get("https://api.example.com/products")
+    .then()
+    .statusCode(200);
+
+given()
+    .queryParam("apiKey", "your_api_key_here")
+    .when()
+    .get("https://api.example.com/products")
+    .then()
+    .statusCode(200);
+
+
+given()
+    .auth()
+    .oauth("consumerKey", "consumerSecret", "accessToken", "secretToken")
+    .when()
+    .get("https://api.example.com/twitter-feed")
+    .then()
+    .statusCode(200);
+
+8. Custom Token (JWT – JSON Web Token)
+
+Tokens are usually passed in Authorization header or Cookie.
+
+given()
+    .header("Authorization", "Bearer " + "jwt_token_here")
+    .when()
+    .get("https://api.example.com/orders")
+    .then()
+    .statusCode(200);
+
+------
+
+Instead of hardcoding JSON payload as a string, we create a POJO class,
+set its fields in Java, and let Rest Assured (via Jackson/Gson) serialize it into JSON automatically.
+
+{
+  "company": "Plivo",
+  "product": {
+    "id": 101,
+    "name": "Voice API",
+    "active": true
+  },
+  "tags": ["api", "communication", "cloud"]
+}
+
+
+package model;
+
+import java.util.List;
+
+public class ProductPayload {
+    private String company;
+    private Product product;
+    private List<String> tags;
+
+    // ✅ Getters & Setters
+    public String getCompany() {
+        return company;
+    }
+    public void setCompany(String company) {
+        this.company = company;
+    }
+
+    public Product getProduct() {
+        return product;
+    }
+    public void setProduct(Product product) {
+        this.product = product;
+    }
+
+    public List<String> getTags() {
+        return tags;
+    }
+    public void setTags(List<String> tags) {
+        this.tags = tags;
+    }
+
+    // ---- Inner class ----
+    public static class Product {
+        private int id;
+        private String name;
+        private boolean active;
+
+        public int getId() {
+            return id;
+        }
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public String getName() {
+            return name;
+        }
+        public void setName(String name) {
+            this.name = name;
+        }
+
+        public boolean isActive() {
+            return active;
+        }
+        public void setActive(boolean active) {
+            this.active = active;
+        }
+    }
+}
+
+
+package tests;
+
+import base.BaseTest;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import model.ProductPayload;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+import java.util.Arrays;
+
+import static io.restassured.RestAssured.given;
+
+public class SerializationTest extends BaseTest {
+
+    @Test
+    public void testPostWithSerialization() {
+        // 🔹 Build Payload in Java (NO JSON hardcoding)
+        ProductPayload payload = new ProductPayload();
+        payload.setCompany("Plivo");
+
+        ProductPayload.Product product = new ProductPayload.Product();
+        product.setId(101);
+        product.setName("Voice API");
+        product.setActive(true);
+
+        payload.setProduct(product);
+        payload.setTags(Arrays.asList("api", "communication", "cloud"));
+
+        // 🔹 Send POST request with POJO (RestAssured will serialize → JSON)
+        Response response =
+                given()
+                    .contentType(ContentType.JSON)
+                    .body(payload) // <-- Serialization happens here
+                .when()
+                    .post("/products")   // Replace with actual endpoint
+                .then()
+                    .log().all()
+                    .extract()
+                    .response();
+
+        // 🔹 Validate
+        Assert.assertEquals(response.statusCode(), 201);
+        Assert.assertEquals(response.jsonPath().getString("company"), "Plivo");
+        Assert.assertEquals(response.jsonPath().getString("product.name"), "Voice API");
+    }
+}
+
+Response :
+
+{
+  "status": "success",
+  "message": "Product created",
+  "data": {
+    "company": "Plivo",
+    "product": {
+      "id": 101,
+      "name": "Voice API",
+      "active": true
+    },
+    "tags": ["api", "communication", "cloud"]
+  },
+  "meta": {
+    "requestId": "abcd-1234-efgh-5678",
+    "responseTimeMs": 120
+  }
+}
+
+package model;
+
+import java.util.List;
+
+// ---- Request POJO ----
+public class ProductPayload {
+    private String company;
+    private Product product;
+    private List<String> tags;
+
+    public String getCompany() { return company; }
+    public void setCompany(String company) { this.company = company; }
+
+    public Product getProduct() { return product; }
+    public void setProduct(Product product) { this.product = product; }
+
+    public List<String> getTags() { return tags; }
+    public void setTags(List<String> tags) { this.tags = tags; }
+
+    public static class Product {
+        private int id;
+        private String name;
+        private boolean active;
+
+        public int getId() { return id; }
+        public void setId(int id) { this.id = id; }
+
+        public String getName() { return name; }
+        public void setName(String name) { this.name = name; }
+
+        public boolean isActive() { return active; }
+        public void setActive(boolean active) { this.active = active; }
+    }
+}
+
+// ---- Response POJO ----
+class ProductResponse {
+    private String status;
+    private String message;
+    private ProductPayload data;
+    private Meta meta;
+
+    public String getStatus() { return status; }
+    public void setStatus(String status) { this.status = status; }
+
+    public String getMessage() { return message; }
+    public void setMessage(String message) { this.message = message; }
+
+    public ProductPayload getData() { return data; }
+    public void setData(ProductPayload data) { this.data = data; }
+
+    public Meta getMeta() { return meta; }
+    public void setMeta(Meta meta) { this.meta = meta; }
+
+    // ---- Inner Meta class ----
+    public static class Meta {
+        private String requestId;
+        private int responseTimeMs;
+
+        public String getRequestId() { return requestId; }
+        public void setRequestId(String requestId) { this.requestId = requestId; }
+
+        public int getResponseTimeMs() { return responseTimeMs; }
+        public void setResponseTimeMs(int responseTimeMs) { this.responseTimeMs = responseTimeMs; }
+    }
+}
+
+
+package tests;
+
+import base.BaseTest;
+import io.restassured.http.ContentType;
+import io.restassured.response.Response;
+import model.ProductPayload;
+import model.ProductResponse;
+import org.testng.Assert;
+import org.testng.annotations.Test;
+
+import java.util.Arrays;
+
+import static io.restassured.RestAssured.given;
+
+public class SerializationDeserializationTest extends BaseTest {
+
+    @Test
+    public void testPostWithSerDe() {
+        // 🔹 1. Build Request Payload
+        ProductPayload payload = new ProductPayload();
+        payload.setCompany("Plivo");
+
+        ProductPayload.Product product = new ProductPayload.Product();
+        product.setId(101);
+        product.setName("Voice API");
+        product.setActive(true);
+
+        payload.setProduct(product);
+        payload.setTags(Arrays.asList("api", "communication", "cloud"));
+
+        // 🔹 2. Send POST Request (Serialization happens here)
+        Response response =
+                given()
+                    .contentType(ContentType.JSON)
+                    .body(payload)
+                .when()
+                    .post("/products")   // Replace with actual endpoint
+                .then()
+                    .log().all()
+                    .extract()
+                    .response();
+
+        // 🔹 3. Deserialize Response JSON → POJO
+        ProductResponse productResponse = response.as(ProductResponse.class);
+
+        // 🔹 4. Assertions
+        Assert.assertEquals(response.getStatusCode(), 201);
+        Assert.assertEquals(productResponse.getStatus(), "success");
+        Assert.assertEquals(productResponse.getData().getCompany(), "Plivo");
+        Assert.assertEquals(productResponse.getData().getProduct().getName(), "Voice API");
+        Assert.assertEquals(productResponse.getMeta().getResponseTimeMs(), 120);
+    }
+}
+
+✅ 1xx – Informational
+
+Rare in automation (mostly internal use).
+
+100 Continue → Client should continue sending request body.
+
+101 Switching Protocols → Used for WebSockets / protocol upgrade.
+
+🟢 2xx – Success
+
+These are the happy path codes.
+
+200 OK
+👉 Standard response for successful GET / PUT requests.
+Example: Fetching user details returns 200.
+
+201 Created
+👉 Resource successfully created (mostly after POST).
+Example: Creating a new product returns 201.
+
+202 Accepted
+👉 Request accepted but processing is async.
+Example: Uploading a file for background processing.
+
+204 No Content
+👉 Success, but no body in response.
+Example: DELETE request succeeded.
+
+🟡 3xx – Redirection
+
+Not super common in API testing, but good to know.
+
+301 Moved Permanently → Resource moved to a new URL.
+
+302 Found → Temporary redirect.
+
+304 Not Modified → Used with caching (resource hasn’t changed).
+
+🔴 4xx – Client Errors
+
+These happen due to bad request or authentication/authorization failures.
+
+400 Bad Request
+👉 Invalid request payload / query params.
+Example: Missing required field in JSON.
+
+401 Unauthorized
+👉 Authentication required or token missing/invalid.
+Example: Accessing an endpoint without login.
+
+403 Forbidden
+👉 Authenticated but not allowed to access resource.
+Example: Normal user trying to access admin API.
+
+404 Not Found
+👉 Resource does not exist.
+Example: Calling /users/999 when no such user exists.
+
+405 Method Not Allowed
+👉 HTTP method not supported.
+Example: Sending POST to /status when only GET is allowed.
+
+409 Conflict
+👉 Conflict in resource state.
+Example: Trying to create a user that already exists.
+
+429 Too Many Requests
+👉 Rate limiting (too many API calls in short time).
+
+🔥 5xx – Server Errors
+Problem is on the server side.
+
+500 Internal Server Error
+👉 Generic server failure.
+Example: NullPointerException in backend.
+
+502 Bad Gateway
+👉 Server acting as gateway received invalid response.
+Example: Load balancer can’t reach app server.
+
+503 Service Unavailable
+👉 Server is down or overloaded.
+Example: During maintenance or crash.
+
+504 Gateway Timeout
+👉 Server didn’t respond in time.
+Example: Upstream dependency too slow.
+
+given()
+    .when()
+        .get("/users/101")
+    .then()
+        .statusCode(200);  // ✅ validating response code
+
+
+👉 Quick real-world mapping for clarity:
+
+200 → GET user details successful
+
+201 → User created successfully
+
+400 → Missing username in payload
+
+401 → Token expired or missing
+
+403 → Normal user hitting admin API
+
+404 → User not found
+
+500 → Backend code issue
+
+>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+Some common questions :
+
+1. What is Rest Assured? Why do we use it?
+
+Answer:
+Rest Assured is a Java-based library for testing and automating REST APIs.
+It provides a fluent DSL to send HTTP requests and validate responses without writing boilerplate code (like HttpURLConnection/OkHttp).
+
+given()
+    .baseUri("https://api.example.com")
+.when()
+    .get("/users/1")
+.then()
+    .statusCode(200)
+    .body("name", equalTo("John Doe"));
+
+2. How do you set up Rest Assured in your project?
+
+Answer:
+We add the dependency in pom.xml (Maven) or build.gradle (Gradle).
+
+<dependency>
+    <groupId>io.rest-assured</groupId>
+    <artifactId>rest-assured</artifactId>
+    <version>5.4.0</version>
+    <scope>test</scope>
+</dependency>
+
+3. How do you validate status codes in Rest Assured?
+
+Answer:
+
+    given()
+        .when()
+        .get("/status")
+        .then()
+        .statusCode(200);
+
+4. How do you validate response body?
+
+Answer:
+Use Hamcrest matchers.
+
+given()
+    .when()
+    .get("/user/1")
+    .then()
+    .body("username", equalTo("techie"))
+    .body("email", containsString("@gmail.com"));
+
+5. How do you validate response headers?
+
+given()
+    .when()
+    .get("/users/1")
+    .then()
+    .header("Content-Type", "application/json");
+
+6. How do you pass query parameters and path parameters?
+
+Answer:
+👉 Path Params:
+
+given()
+    .pathParam("userId", 5)
+.when()
+    .get("/users/{userId}")
+.then()
+    .statusCode(200);
+
+👉 Query Params:
+
+given()
+    .queryParam("flag", "true")
+    .queryParam("join", "no")
+.when()
+    .get("/status")
+.then()
+    .statusCode(200);
+
+7. How do you send a POST request with JSON payload?
+
+Class pojo - create and send : this is one way
+
+String payload = "{ \"name\": \"Sharath\", \"role\": \"QA\" }";
+
+given()
+    .header("Content-Type", "application/json")
+    .body(payload)
+.when()
+    .post("/users")
+.then()
+    .statusCode(201);
+
+
+8. How do you handle Authentication in Rest Assured?
+
+👉 Basic Auth
+
+given()
+    .auth().basic("username", "password")
+.when()
+    .get("/secure/data")
+.then()
+    .statusCode(200);
+
+👉 Bearer Token / OAuth2
+
+given()
+    .auth().oauth2("access_token")
+.when()
+    .get("/profile")
+.then()
+    .statusCode(200);
+
+
+9. How do you serialize and deserialize POJOs in Rest Assured?
+
+    Serialization (POJO → JSON):
+
+class User {
+    private String name;
+    private String role;
+    // getters & setters
+}
+
+User user = new User();
+user.setName("Sharath");
+user.setRole("QA");
+
+given()
+    .contentType("application/json")
+    .body(user)
+.when()
+    .post("/users")
+.then()
+    .statusCode(201);
+
+    Deserialization (JSON → POJO):
+
+User responseUser =
+given()
+    .when()
+    .get("/users/1")
+.then()
+    .statusCode(200)
+    .extract().as(User.class);
+
+System.out.println(responseUser.getName());
+
+
+10. How do you validate response time?
+
+given()
+    .when()
+    .get("/users")
+.then()
+    .time(lessThan(2000L)); // response < 2s
+
+11. How do you handle complex/nested JSON responses?
+
+given()
+    .when()
+    .get("/orders/123")
+.then()
+    .body("customer.name", equalTo("Sharath"))
+    .body("items[0].price", equalTo(199.99));
+
+12. How do you parameterize API tests?
+
+Use TestNG DataProvider or JUnit Parameterized tests.
+
+@DataProvider(name = "userData")
+public Object[][] createData() {
+    return new Object[][] { {1}, {2}, {3} };
+}
+
+@Test(dataProvider = "userData")
+public void testUserAPI(int userId) {
+    given()
+        .pathParam("id", userId)
+    .when()
+        .get("/users/{id}")
+    .then()
+        .statusCode(200);
+}
+
+13. How do you build a framework with Rest Assured?
+
+Base class: common setup (base URI, port, auth)
+
+Utils: request builders, payload builders
+
+POJOs: request/response models
+
+Test Layer: actual test cases
+
+Reports: Allure/Extent
+
+14. How do you log requests & responses?
+
+given()
+    .log().all()
+.when()
+    .get("/users")
+.then()
+    .log().all();
+
+15. How do you integrate Rest Assured with Cucumber/BDD?
+
+Write step definitions using Rest Assured inside @Given, @When, @Then.
+
+@When("I send GET request to {string}")
+public void iSendGetRequest(String endpoint) {
+    response = given().get(endpoint);
+}
+
+16. How do you handle file uploads & downloads in Rest Assured?
+
+👉 Upload:
+
+given()
+    .multiPart("file", new File("data.csv"))
+.when()
+    .post("/upload")
+.then()
+    .statusCode(200);
+
+👉 Download:
+
+byte[] file =
+given()
+    .when()
+    .get("/download/report.pdf")
+    .asByteArray();
+
+Files.write(Paths.get("report.pdf"), file);
+
+
+17. How do you integrate Rest Assured with CI/CD (like Jenkins)?
+
+- Add tests as part of Maven/Gradle build
+- Generate Allure/Extent Reports
+- Jenkins pipeline executes "mvn clean test" and publishes report
+
+18. How do you validate JSON Schema in Rest Assured?
+
+given()
+    .when()
+    .get("/users/1")
+.then()
+    .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("user-schema.json"));
+
+
+package tests;
+
+import io.restassured.RestAssured;
+import io.restassured.module.jsv.JsonSchemaValidator;
+import model.User;
+import org.testng.annotations.Test;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
+
+public class UserApiTest {
+
+    @Test
+    public void validateUserApi() {
+        // Base URL setup
+        RestAssured.baseURI = "https://reqres.in/api";  // Example public API
+
+        // Perform request, validate schema, and extract into POJO
+        User user = RestAssured
+                .given()
+                    .when()
+                    .get("/users/1")
+                .then()
+                    .statusCode(200)
+                    .time(lessThan(2000L)) // response time check
+                    .header("Content-Type", containsString("application/json"))
+                    .body(JsonSchemaValidator.matchesJsonSchemaInClasspath("schemas/user-schema.json"))
+                    .extract()
+                    .as(User.class);
+
+        // Business logic validation using POJO
+        assertThat(user.getId(), equalTo(1));
+        assertThat(user.getName(), not(emptyString()));
+        assertThat(user.getEmail(), endsWith("@example.com"));
+        assertThat(user.isActive(), is(true));
+        assertThat(user.getRoles(), hasItem("admin"));
+    }
+}
+
+
+19. What challenges have you faced in API automation?
+
+- Handling dynamic tokens (solved with interceptors/hooks).
+
+- Validating large/complex JSON (solved with POJOs + JSONPath).
+
+- Test data management (used Mongo/Kafka stubs or DB setup).
+
+- Integration with microservices (Kafka + AWS SQS/SNS).
+
+20. 20. Bonus: Can you show me a complete E2E Rest Assured Test?
+
+@Test
+public void createAndFetchUserTest() {
+    // 1. Create User
+    User newUser = new User("Sharath", "QA");
+
+    int userId = given()
+                    .contentType("application/json")
+                    .body(newUser)
+                .when()
+                    .post("/users")
+                .then()
+                    .statusCode(201)
+                    .extract()
+                    .path("id");
+
+    // 2. Get User & validate
+    User fetchedUser = given()
+                        .pathParam("id", userId)
+                      .when()
+                        .get("/users/{id}")
+                      .then()
+                        .statusCode(200)
+                        .extract()
+                        .as(User.class);
+
+    Assert.assertEquals(fetchedUser.getName(), "Sharath");
+}
+
+🔹 9. Difference between Hard Assertions vs Soft Assertions in API tests?
+
+Hard → stops test execution after first failure (assertThat).
+
+Soft → collects all failures, reports at the end (SoftAssert in TestNG).
+
+
+🔹 What is Singleton Design Pattern?
+
+It ensures that a class has only one instance throughout the application.
+
+Provides a global point of access to that instance.
+
+Useful when you need to share the same object across different classes (e.g., DB connection, WebDriver instance in automation).
+
+🔹 Real-Life Example in Automation
+
+In Selenium/Rest Assured frameworks, we don’t want multiple browser drivers or RestAssured configs unnecessarily. Instead, we use a singleton class to manage them.
+
+Example: Singleton Database Connection :
+
+public class DatabaseConnection {
+
+    // 1. Private static instance (single object)
+    private static DatabaseConnection instance;
+
+    // 2. Private constructor so no one can create object directly
+    private DatabaseConnection() {
+        System.out.println("Database Connection created...");
+    }
+
+    // 3. Public method to provide access to the single instance
+    public static DatabaseConnection getInstance() {
+        if (instance == null) {
+            instance = new DatabaseConnection();
+        }
+        return instance;
+    }
+
+    // 4. Some business method
+    public void connect() {
+        System.out.println("Connected to Database!");
+    }
+}
+
+How to Use It?
+
+public class Main {
+    public static void main(String[] args) {
+
+        // Both calls return the same instance
+        DatabaseConnection db1 = DatabaseConnection.getInstance();
+        DatabaseConnection db2 = DatabaseConnection.getInstance();
+
+        db1.connect();
+
+        System.out.println(db1 == db2); // true (both reference same object)
+    }
+}
+
+Singleton in Automation Framework
+
+public class DriverManager {
+
+    private static WebDriver driver;
+
+    private DriverManager() {}
+
+    public static WebDriver getDriver() {
+        if (driver == null) {
+            driver = new ChromeDriver(); // or read from config
+        }
+        return driver;
+    }
+}
+
+WebDriver driver = DriverManager.getDriver();
+driver.get("https://plivo.com");
+
+Q: What happens if multiple threads call getInstance() at the same time? How do you make it thread-safe?
+
+This is where Thread-safe Singleton comes in.
+Thread-safe Singleton in Java
+1. Eager Initialization (Simple but not memory efficient)
+
+The instance is created at class load time. Thread-safe but may waste memory if never used.
+
+public class SingletonEager {
+
+    private static final SingletonEager instance = new SingletonEager();
+
+    private SingletonEager() {}
+
+    public static SingletonEager getInstance() {
+        return instance;
+    }
+}
+
+2. Lazy Initialization with synchronized
+
+Makes getInstance() thread-safe but can be slow because every call is synchronized.
+
+public class SingletonLazy {
+
+    private static SingletonLazy instance;
+
+    private SingletonLazy() {}
+
+    public static synchronized SingletonLazy getInstance() {
+        if (instance == null) {
+            instance = new SingletonLazy();
+        }
+        return instance;
+    }
+}
+
+3. Double-Checked Locking (Best for Performance)
+
+This avoids unnecessary synchronization after the instance is initialized.
+
+public class SingletonDoubleCheck {
+
+    private static volatile SingletonDoubleCheck instance;
+
+    private SingletonDoubleCheck() {}
+
+    public static SingletonDoubleCheck getInstance() {
+        if (instance == null) {
+            synchronized (SingletonDoubleCheck.class) {
+                if (instance == null) {
+                    instance = new SingletonDoubleCheck();
+                }
+            }
+        }
+        return instance;
+    }
+}
+
+🔹 What is the Builder Design Pattern?(Fluent design pattern also same)
+
+It’s a creational design pattern.
+
+Used when we need to construct complex objects step by step.
+
+Helps in creating immutable objects with flexibility.
+
+Common in test automation when building request payloads for REST APIs or setting up test data.
+
+Example 1 – Simple Java Builder
+
+public class User {
+    private String name;
+    private int age;
+    private String email;
+    private String address;
+
+    // Private constructor
+    private User(UserBuilder builder) {
+        this.name = builder.name;
+        this.age = builder.age;
+        this.email = builder.email;
+        this.address = builder.address;
+    }
+
+    // Getters
+    public String getName() { return name; }
+    public int getAge() { return age; }
+    public String getEmail() { return email; }
+    public String getAddress() { return address; }
+
+    // Static Builder Class
+    public static class UserBuilder {
+        private String name;
+        private int age;
+        private String email;
+        private String address;
+
+        public UserBuilder setName(String name) {
+            this.name = name;
+            return this;
+        }
+        public UserBuilder setAge(int age) {
+            this.age = age;
+            return this;
+        }
+        public UserBuilder setEmail(String email) {
+            this.email = email;
+            return this;
+        }
+        public UserBuilder setAddress(String address) {
+            this.address = address;
+            return this;
+        }
+
+        public User build() {
+            return new User(this);
+        }
+    }
+}
+
+Usage :
+
+public class BuilderPatternTest {
+    public static void main(String[] args) {
+        User user = new User.UserBuilder()
+                        .setName("Sharath")
+                        .setAge(28)
+                        .setEmail("sharath@test.com")
+                        .setAddress("Bangalore")
+                        .build();
+
+        System.out.println("User Created: " + user.getName() + ", " + user.getEmail());
+    }
+}
+
+Explain: Builder helps create objects with multiple optional params.
+
+Compare: Better than telescoping constructors.
+
+Real-world SDET Example: Useful for building dynamic API payloads or test data objects.
+
+Mention Lombok: @Builder in Lombok auto-generates builder code.
+
+----
+
+

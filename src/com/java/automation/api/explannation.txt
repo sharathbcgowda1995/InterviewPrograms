@@ -1,6 +1,7 @@
 - Why Getters and Setters Are Needed in POJOs
 1. For Serialization (POJO to JSON):
-When using frameworks like Jackson or Gson, the library calls the getter methods to access the values of private fields in the POJO. It then serializes these values into a JSON string.
+When using frameworks like Jackson or Gson, the library calls the getter methods to access the values of private fields in the POJO.
+It then serializes these values into a JSON string.
 
 Example:
 Given this POJO:

@@ -1,0 +1,624 @@
+📌 SDET Interview Questions (6+ Years Experience)
+1. Core QA & Testing Fundamentals
+
+Explain the Software Testing Life Cycle (STLC).
+
+Difference between Verification vs Validation.
+
+Types of testing you performed (Functional, Regression, Integration, E2E).
+
+How do you design test cases from requirements? Example.
+
+How do you ensure test coverage is complete?
+
+What is risk-based testing?
+
+How do you handle ambiguous requirements?
+
+2. Automation Framework (Java / Selenium / Rest Assured / Playwright)
+
+Which automation frameworks have you built? Explain in detail.
+
+Difference between Data Driven, Keyword Driven, Hybrid, BDD frameworks.
+
+Explain Page Object Model (POM) with example.
+
+What are Fluent Waits in Selenium?
+
+How do you handle dynamic web elements?
+
+How do you design a custom TestNG/JUnit listener?
+
+How do you manage test data in automation?
+
+3. API Testing & Rest Assured
+
+Difference between SOAP and REST APIs.
+
+Explain Idempotent methods in REST.
+
+Write a Rest Assured test to validate a JSON response with POJOs (serialization/deserialization).
+
+How do you handle OAuth2 authorization in API testing?
+
+Difference between Schema Validation vs POJO Deserialization.
+
+Explain Mocking APIs – tools used (WireMock, MockServer, Postman mock server).
+
+How do you do contract testing? (PACT / JSON Schema).
+
+4. Java & OOPs (for Automation)
+
+Difference between abstract class vs interface.
+
+What is Singleton Design Pattern? Example in framework.
+
+Explain Builder Pattern and Fluent Pattern.
+
+What is Immutable Class in Java?
+
+Explain Collections Framework (List vs Set vs Map).
+
+Difference between HashMap vs ConcurrentHashMap.
+
+Explain Java Streams with example.
+
+What are lambdas & functional interfaces?
+
+5. Design Patterns / Best Practices
+
+Why do we use Singleton in framework utilities?
+
+Difference between Factory vs Builder vs Fluent patterns.
+
+What is Strategy Design Pattern? Where do you use it?
+
+How do you design a custom retry mechanism in your framework?
+
+How do you implement thread-safe test execution (parallel execution)?
+
+6. Database Testing
+
+How do you test data from SQL/NoSQL DBs?
+
+Difference between RDBMS vs NoSQL.
+
+Write a SQL query:
+
+Find the second highest salary.
+
+Get users who placed more than 5 orders.
+
+Explain Joins (INNER, LEFT, RIGHT, FULL) with example.
+
+Have you worked with MongoDB? Example query.
+
+7. Message Queues & Event Driven Systems
+
+Have you tested Kafka or RabbitMQ?
+
+How do you validate messages published to Kafka?
+
+Difference between Consumer Group vs Partition.
+
+How do you mock Kafka events in automation?
+
+8. Performance & Security Testing
+
+Difference between Load vs Stress vs Spike testing.
+
+Which tools have you used? (JMeter, Locust, Gatling).
+
+How do you validate API performance in Rest Assured?
+
+What are common API security tests (SQL Injection, XSS, Auth bypass)?
+
+9. DevOps, CI/CD, Cloud
+
+How do you integrate automation with Jenkins/GitHub Actions?
+
+What are stages in Jenkins pipeline? Example.
+
+Difference between Docker vs VM.
+
+Have you deployed automation tests in Kubernetes?
+
+How do you manage secrets (AWS Secrets Manager / Vault) in test automation?
+
+Difference between Blue-Green vs Canary Deployment.
+
+10. System Design for QA
+
+How would you design an automation framework from scratch?
+
+How do you test microservices architecture?
+
+How do you test a system involving AWS Lambda + S3 + Kafka + MongoDB?
+
+How do you ensure scalability of your automation suite?
+
+11. Behavioral & Problem Solving
+
+Tell me about a challenging bug you found in production.
+
+How do you prioritize test cases under tight deadlines?
+
+What’s the biggest framework improvement you made?
+
+How do you mentor junior QAs/SDETs in your team?
+
+How do you handle flaky tests?
+
+📌 Bonus: Hands-On Coding Questions
+
+Write a Java program to find the longest substring without repeating characters.
+
+Reverse a string using recursion.
+
+Parse JSON response and fetch all user emails.
+
+Write a SQL query to get users who haven’t logged in the last 30 days.
+
+Write a Rest Assured test for POST request with serialization and validate response with deserialization.
+
+⚡ This is the realistic list asked in 6+ years SDET interviews across companies like Amazon, Walmart, PayPal, Flipkart, Games24x7, and fintechs.
+
+👉 Do you want me to now prepare a PDF with questions + categorized sample answers + code snippets so you can use it like a mock interview handbook?
+
+You said:
+add any other questions thats missed even though you misssed earlier
+ChatGPT said:
+
+Got it 👍 Since you want a no-missed, complete SDET interview question bank for 6+ years experience, I’ll expand the list with additional advanced questions that interviewers often ask but are easy to miss.
+
+🔥 Additional SDET Interview Questions (Missed Earlier)
+🟢 Advanced Automation & Framework Design
+
+How do you design a custom test runner in TestNG / JUnit?
+
+Difference between Soft Assertions vs Hard Assertions.
+
+How do you implement parallel execution with thread-local WebDriver?
+
+How do you handle cross-browser testing in Selenium Grid / Docker-Selenium?
+
+How do you capture screenshots for failed tests automatically?
+
+Explain Cucumber Hooks (Before, After, Tagged hooks).
+
+How do you handle data-driven testing with Excel/CSV/DB?
+
+What are test doubles (Stub, Mock, Spy, Fake)? Example in test automation.
+
+🟢 API Testing – Advanced
+
+What is contract testing? How is it different from functional testing?
+
+What are idempotency keys and why are they important?
+
+How do you test pagination in APIs?
+
+How do you validate async APIs (polling, webhooks)?
+
+How do you test rate-limited APIs?
+
+How do you generate random but realistic test data (e.g., Faker library)?
+
+What is the difference between PUT vs PATCH?
+
+🟢 Java – Advanced Questions
+
+Explain synchronized block vs method in Java.
+
+What is the difference between volatile vs synchronized?
+
+What are Executors & Thread Pools?
+
+Explain CompletableFuture in Java 8.
+
+Difference between Comparable vs Comparator.
+
+What are Generics in Java? Example in framework.
+
+How do you handle memory leaks in Java automation frameworks?
+
+🟢 Databases – Advanced
+
+What is ACID property in databases?
+
+Difference between OLTP vs OLAP systems.
+
+How do you test stored procedures or triggers?
+
+How do you validate eventual consistency in NoSQL DBs?
+
+Write a SQL query to find duplicate rows in a table.
+
+Write a query to get nth highest salary.
+
+🟢 Distributed Systems & Microservices Testing
+
+How do you test a distributed system with multiple microservices?
+
+What is circuit breaker pattern (Hystrix / Resilience4j)?
+
+How do you validate retry logic in APIs?
+
+How do you test an event-driven architecture (Kafka/SQS)?
+
+How do you test service-to-service communication?
+
+How do you ensure backward compatibility in APIs?
+
+🟢 Performance & Reliability
+
+How do you identify a memory leak in your app?
+
+How do you set SLAs, SLOs, and SLIs for performance testing?
+
+How do you simulate spike load using JMeter/Locust?
+
+How do you analyze 99th percentile latency?
+
+What is Chaos Testing? Have you done it?
+
+🟢 DevOps / CI-CD / Cloud
+
+How do you integrate tests into CI/CD pipelines?
+
+How do you manage test environments in cloud?
+
+Difference between blue-green vs rolling deployments.
+
+How do you run tests in Docker containers?
+
+How do you provision test data in AWS S3, DynamoDB, or RDS?
+
+What is Infrastructure as Code (IaC)? Did you use Terraform/CloudFormation?
+
+How do you manage feature flag testing?
+
+🟢 Security Testing
+
+What is JWT? How do you validate it?
+
+How do you test for SQL Injection & XSS?
+
+How do you test APIs with HMAC or API keys?
+
+What is CSRF and how do you prevent/test it?
+
+How do you test OAuth2 flows (Authorization Code, Client Credentials)?
+
+🟢 Tools & Ecosystem
+
+What monitoring tools have you worked with? (Prometheus, Grafana, ELK, Splunk).
+
+What’s the difference between Postman collections vs Rest Assured framework?
+
+Have you used Allure / Extent Reports for reporting?
+
+How do you manage test execution dashboards?
+
+🟢 Tricky & Scenario-Based
+
+You have 5000 tests running in CI and builds take 4 hours. How will you optimize?
+
+If an API depends on a downstream service that is down, how do you test?
+
+How do you test an ML/AI system where outputs are probabilistic?
+
+How do you ensure idempotency in payment systems?
+
+How do you test a system without UI (headless service)?
+
+How do you test time-dependent systems (e.g., subscription expiry)?
+
+🟢 Behavioral / Leadership
+
+Tell me a time when you improved test coverage significantly.
+
+How do you deal with developers who say testing is slowing them down?
+
+How do you handle flaky tests in production pipelines?
+
+How do you measure the ROI of test automation?
+
+How do you balance between exploratory testing vs automation?
+
+✅ With all these added, you now have a 360° coverage of SDET interview questions for 6–8 YOE.
+This is the master list interviewers pull from — whether it’s Java + Automation, API, DB, DevOps, or Testing Principles.
+
+👉 Do you want me to convert this into a structured study plan (week-wise prep roadmap) so you can revise in order without getting overwhelmed?
+
+You said:
+any other questions missed remember
+ChatGPT said:
+
+Perfect 👍 You’re asking the right thing — at 6+ years experience, interviewers expect depth + breadth, so they might throw in less obvious, corner-case questions that often get missed.
+Let me carefully add the ones still not covered earlier.
+
+🟣 Other Missed SDET Interview Questions (Advanced & Rarely Asked)
+🔹 Core Testing Principles & Strategies
+
+How do you decide what to automate and what not to automate?
+
+What is risk-based testing? Example.
+
+What is shift-left vs shift-right testing?
+
+Difference between Sanity vs Smoke testing.
+
+Explain equivalence partitioning & boundary value analysis.
+
+What is mutation testing?
+
+How do you measure code coverage vs test coverage?
+
+🔹 Design Patterns in Test Automation
+
+Apart from Singleton / Builder / Fluent, what other patterns have you used?
+
+Factory pattern for driver initialization
+
+Strategy pattern for test data management
+
+Page Object Model (POM)
+
+Page Factory vs POM differences
+
+When to use Facade pattern in test frameworks?
+
+🔹 API & Backend Testing (Edge Cases)
+
+How do you test APIs when response schema changes frequently?
+
+How do you test WebSocket APIs?
+
+How do you test a gRPC service?
+
+How do you test Kafka consumers & producers?
+
+How do you validate event order in async systems?
+
+What’s the difference between schema validation vs contract validation in APIs?
+
+🔹 Performance / Scalability
+
+How do you test for memory leaks in API services?
+
+How do you test connection pool limits in DB/API?
+
+What is the difference between Load vs Stress vs Soak testing?
+
+How do you measure throughput vs latency?
+
+How do you validate caching (Redis, CDN) works properly?
+
+🔹 Databases – Advanced
+
+How do you test a system that uses eventual consistency (e.g., DynamoDB, Cassandra)?
+
+Write SQL to find orphan records between two related tables.
+
+What are database indexing strategies and how do you test their impact?
+
+How do you verify data replication across regions?
+
+🔹 Security & Reliability
+
+How do you test for broken authentication?
+
+How do you test role-based access control (RBAC)?
+
+How do you test API throttling & quota limits?
+
+What is fuzz testing? Example in APIs.
+
+How do you test data encryption at rest vs in transit?
+
+🔹 System Design + Testing
+
+If asked to test a payment system, what are your test scenarios?
+
+How would you test Uber surge pricing logic?
+
+How would you test a real-time chat application (e.g., WhatsApp)?
+
+How do you validate cron jobs / scheduled tasks?
+
+How do you test a system with geo-distributed users (e.g., Netflix)?
+
+🔹 CI/CD, DevOps & Cloud
+
+How do you version control test data?
+
+How do you ensure test data isolation in CI pipelines?
+
+How do you test in containerized environments (Docker, Kubernetes)?
+
+What is Canary Testing in deployment?
+
+How do you do feature flag testing across environments?
+
+🔹 Java / Programming Deep Dive
+
+Explain ThreadLocal with example (used in parallel WebDriver).
+
+What’s the difference between AtomicInteger vs synchronized counter?
+
+Explain wait/notify in multithreading.
+
+What is Deadlock? How do you detect it?
+
+Explain immutability in Java (e.g., String class).
+
+When to use Optional in Java 8?
+
+🔹 Tricky Interview Scenarios
+
+You join a team where 90% of tests are failing. How do you fix it?
+
+You see flaky tests in production. What steps do you take?
+
+You are given a system with no documentation. How do you test it?
+
+How do you prioritize critical vs non-critical bugs?
+
+How do you handle race conditions in test automation?
+
+If build pipelines are slow, how do you optimize execution time?
+
+✅ Now this list covers every dimension:
+
+Testing principles ✅
+
+Framework design & patterns ✅
+
+Java/programming depth ✅
+
+API/DB ✅
+
+Performance, Security, Cloud ✅
+
+Real-world scenarios ✅
+
+Leadership / troubleshooting ✅
+
+This is the complete bank of SDET questions for 6–10 YOE.
+
+👉 Do you want me to now bucket these into a “priority-wise cheat sheet” (High-frequency vs Medium vs Rare) so you know what to focus on first when preparing?
+
+You said:
+any other ?
+ChatGPT said:
+
+Yes 👍 — there are still some niche but important questions that sometimes come up in senior SDET interviews which I haven’t listed yet. These are not always asked, but when they are, they help interviewers gauge deep system-level and leadership thinking.
+
+🟣 Additional SDET Interview Questions (Rare but Asked at 6+ YOE)
+🔹 Test Architecture & Design
+
+How would you design a test automation framework from scratch for a microservices-based application?
+
+What is the difference between keyword-driven vs data-driven vs hybrid frameworks?
+
+How do you ensure your test framework is scalable & maintainable?
+
+How would you handle parallel execution across multiple environments (QA, UAT, Staging, Prod Canary)?
+
+🔹 Observability & Debugging
+
+How do you use logs, metrics, and traces in debugging automation failures?
+
+How do you test that application monitoring (Prometheus/Grafana/ELK) is working correctly?
+
+How do you verify alerting systems (like PagerDuty or CloudWatch alarms)?
+
+🔹 Mobile & Cross-Platform Testing
+
+How would you test mobile apps (iOS/Android) differently from web apps?
+
+What’s the difference between Appium vs Espresso/XCUITest?
+
+How do you handle device fragmentation testing?
+
+How do you automate testing for progressive web apps (PWA)?
+
+🔹 Big Data / Streaming Systems
+
+How do you validate a Kafka topic’s consumer lag?
+
+How would you test Spark/MapReduce jobs?
+
+How do you verify data correctness in ETL pipelines?
+
+How do you handle testing when data is petabyte-scale?
+
+🔹 AI/ML System Testing
+
+How do you test an ML model’s predictions?
+
+How do you validate bias in AI models?
+
+How do you test recommendation engines (like YouTube/Netflix)?
+
+What’s the difference between functional correctness vs model accuracy testing?
+
+🔹 Team / Process Leadership
+
+How do you influence developers to write unit tests?
+
+How do you handle a situation where management pushes for faster delivery but tests are failing?
+
+How do you track automation ROI?
+
+How do you mentor junior QAs to grow into SDETs?
+
+How do you handle cross-team dependencies in automation?
+
+🔹 Advanced Troubleshooting
+
+How do you test for heisenbugs (bugs that disappear when re-run)?
+
+How do you debug intermittent network failures in test automation?
+
+How do you isolate whether a test failure is test issue vs product issue?
+
+How do you deal with test data pollution across environments?
+
+🔹 Emerging Areas
+
+What is contract testing (e.g., Pact) and when to use it?
+
+How do you test serverless applications (AWS Lambda, Azure Functions)?
+
+How do you test API versioning in microservices?
+
+How do you test multi-tenant SaaS applications?
+
+How do you validate feature toggles and rollout strategies?
+
+✅ Now, with this, you’ve got a 360° pool:
+
+Core + Advanced + Rare + Leadership + Modern tech stack (Cloud, ML, Big Data).
+
+This is the ultimate prep set for 6–10 years SDET interviews.
+
+👉 Do you want me to compile all of these into a structured PDF (topic-wise Q&A with examples) so you have a single “SDET Interview Bible” for quick revision?
+
+You said:
+all the questions that you sggested can you add them in on place ?
+ChatGPT said:
+
+Perfect 👍 Let’s collect all the SDET interview questions I’ve suggested so far (from our entire conversation) into one single comprehensive list.
+
+I’ll group them topic-wise so it’s easy for you to prepare and revise.
+
+📘 SDET Interview Questions (For 5–8 Years Experience)
+🔹 Core Java & OOPs
+
+Difference between == and .equals() in Java?
+
+What are HashMap, HashSet, TreeMap differences?
+
+Explain final, finally, and finalize.
+
+Explain Exception hierarchy in Java.
+
+Checked vs Unchecked exceptions.
+
+What is the difference between throw and throws?
+
+Explain static keyword usage.
+
+Explain Singleton Design Pattern with example.
+
+Explain Builder Design Pattern with example.
+
+What is Fluent Design Pattern? (method chaining).
+
+Explain volatile and synchronized.
+
+Explain immutability in Java with an example.
+
+Shallow copy vs Deep copy.
