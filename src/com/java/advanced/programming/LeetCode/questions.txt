@@ -1,0 +1,7 @@
+206. Reverse Linked List : https://leetcode.com/problems/reverse-linked-list/?envType=problem-list-v2&envId=oizxjoit
+530. Minimum Absolute Difference in BST : https://leetcode.com/problems/minimum-absolute-difference-in-bst/submissions/1749154496/?envType=study-plan-v2&envId=top-interview-150
+
+To be done :
+- Median of Two Sorted Arrays
+- Trapping Rain Water
+- Permutations
