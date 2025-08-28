@@ -1,4 +1,4 @@
-package com.java.advanced.programming.LeetCode.practice;
+package com.java.advanced.programming.LeetCode;
 
 public class MinSizeSubArraySum {
     //    Input: target = 7, nums = [2,3,1,2,4,3]

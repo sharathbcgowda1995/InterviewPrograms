@@ -57,7 +57,8 @@ public class TopKFrequentElements {
                 for (int element : bucket[pos]) {
                     // Step 4: Limit to the top K[2] elements
                     if (counter < k) {
-                        mostFrequentElements[counter++] = element;
+                        mostFrequentElements[counter] = element;
+                        counter++;
                     }
                 }
             }

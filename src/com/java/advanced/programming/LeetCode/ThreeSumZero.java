@@ -20,7 +20,7 @@ public class ThreeSumZero {
         Arrays.sort(arr);
 
         //2. To store the unique values combination that will form 0
-        Set<List<Integer>> result = new HashSet<>();
+        HashSet<List<Integer>> result = new HashSet<>();
 
         //3. Take one index fixed with checking other combinations
         for (int i = 0; i < arr.length; i++) {
