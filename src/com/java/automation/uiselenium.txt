@@ -1,0 +1,9 @@
+1. Handle Hidden Drop Down Values / Auto Suggestions using DOM Trick  : https://www.youtube.com/watch?v=zw99PZalGqA
+
+> inspect > event listeneres >
+1. blur : remove all the options
+2. focusout : if the 1st option didn't work then use this it will work.
+
+- Use contains method to find the common locator.
+
+2.

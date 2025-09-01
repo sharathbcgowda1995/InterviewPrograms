@@ -1,4 +1,4 @@
-//package com.java.automation.api.serialization;
+//package com.java.tech.api.serialization;
 //
 //import io.restassured.RestAssured;
 //import io.restassured.response.Response;

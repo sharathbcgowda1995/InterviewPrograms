@@ -1,18 +1,9 @@
-package com.java.automation.api.serialization;
+package com.java.tech.api.deserialization;
 
 public class User {
     private String name;
     private String email;
     private int age;
-
-    // Constructors
-    public User() {}
-
-    public User(String name, String email, int age) {
-        this.name = name;
-        this.email = email;
-        this.age = age;
-    }
 
     // Getters and Setters
     public String getName() {
@@ -37,5 +28,11 @@ public class User {
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    // Optional: Override toString() for easier debugging
+    @Override
+    public String toString() {
+        return "User{name='" + name + "', email='" + email + "', age=" + age + "}";
     }
 }

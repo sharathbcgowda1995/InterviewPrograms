@@ -1,0 +1,298 @@
+1] What is ITestListener in TestNG?
+
+In TestNG, ITestListener is an interface that allows you to listen to the events that occur during the test execution lifecycle.
+It provides callback methods you can implement to perform actions whenever a test starts, passes, fails, skips, etc.
+
+This is very useful in frameworks to:
+
+- Capture logs.
+- Take screenshots on test failures.
+- Update test reports (Extent, Allure).
+- Maintain custom reporting/tracking.
+
+2. Methods in ITestListener
+
+Some key methods:
+
+1. onTestStart(ITestResult result) → Called when a test method starts.
+2. onTestSuccess(ITestResult result) → Called when a test method passes.
+3. onTestFailure(ITestResult result) → Called when a test method fails.
+4. onTestSkipped(ITestResult result) → Called when a test method is skipped.
+5. onStart(ITestContext context) → Called before any test in the <test> tag of testng.xml starts.
+6. onFinish(ITestContext context) → Called after all tests in the <test> tag are executed.
+
+3. Using ITestListener in a Framework
+
+Step 1: Create a Listener Class
+
+package com.framework.listeners;
+
+import org.testng.ITestContext;
+import org.testng.ITestListener;
+import org.testng.ITestResult;
+
+public class TestListener implements ITestListener {
+
+    @Override
+    public void onTestStart(ITestResult result) {
+        System.out.println("Test Started: " + result.getName());
+    }
+
+    @Override
+    public void onTestSuccess(ITestResult result) {
+        System.out.println("✅ Test Passed: " + result.getName());
+    }
+
+    @Override
+    public void onTestFailure(ITestResult result) {
+        System.out.println("❌ Test Failed: " + result.getName());
+        // Example: Take screenshot if WebDriver is used
+        // ScreenshotUtil.capture(result.getName());
+    }
+
+    @Override
+    public void onTestSkipped(ITestResult result) {
+        System.out.println("⚠️ Test Skipped: " + result.getName());
+    }
+
+    @Override
+    public void onStart(ITestContext context) {
+        System.out.println("=== Test Suite Started ===");
+    }
+
+    @Override
+    public void onFinish(ITestContext context) {
+        System.out.println("=== Test Suite Finished ===");
+    }
+}
+
+Step 2: Register the Listener
+
+Option 1: Using @Listeners annotation
+
+import org.testng.annotations.Listeners;
+import org.testng.annotations.Test;
+
+@Listeners(com.framework.listeners.TestListener.class)
+public class SampleTest {
+
+    @Test
+    public void testPass() {
+        System.out.println("Inside testPass()");
+    }
+
+    @Test
+    public void testFail() {
+        System.out.println("Inside testFail()");
+        assert false; // Force failure
+    }
+}
+
+Option 2: Add in testng.xml
+
+<suite name="My Suite">
+  <listeners>
+    <listener class-name="com.framework.listeners.TestListener"/>
+  </listeners>
+
+  <test name="Sample Tests">
+    <classes>
+      <class name="com.tests.SampleTest"/>
+    </classes>
+  </test>
+</suite>
+
+Step 3: Output Example
+
+If you run the above test, console output would look like:
+
+=== Test Suite Started ===
+Test Started: testPass
+Inside testPass()
+✅ Test Passed: testPass
+Test Started: testFail
+Inside testFail()
+❌ Test Failed: testFail
+=== Test Suite Finished ===
+
+-------------------------///---------------------
+
+2]Ways to Achieve Parallel Execution in TestNG ?
+
+TestNG allows you to run tests in parallel at different levels:
+
+1.Methods → parallel execution of test methods inside a class.
+
+<suite name="MySuite" parallel="methods" thread-count="3">
+  <test name="MethodLevelTests">
+    <classes>
+      <class name="com.tests.SampleTest"/>
+    </classes>
+  </test>
+</suite>
+
+parallel="methods" → Runs test methods in parallel.
+thread-count="3" → Maximum 3 threads will run simultaneously.
+
+package com.tests;
+import org.testng.annotations.Test;
+public class SampleTest {
+
+    @Test
+    public void testA() throws InterruptedException {
+        System.out.println("Test A - Thread: " + Thread.currentThread().getId());
+        Thread.sleep(2000);
+    }
+
+    @Test
+    public void testB() throws InterruptedException {
+        System.out.println("Test B - Thread: " + Thread.currentThread().getId());
+        Thread.sleep(2000);
+    }
+
+    @Test
+    public void testC() throws InterruptedException {
+        System.out.println("Test C - Thread: " + Thread.currentThread().getId());
+        Thread.sleep(2000);
+    }
+}
+
+2.Classes → parallel execution of different classes.
+
+<suite name="MySuite" parallel="classes" thread-count="2">
+  <test name="ClassLevelTests">
+    <classes>
+      <class name="com.tests.Test1"/>
+      <class name="com.tests.Test2"/>
+    </classes>
+  </test>
+</suite>
+
+3.Tests → parallel execution of different <test> tags in testng.xml.
+
+<suite name="MySuite" parallel="tests" thread-count="2">
+  <test name="TestGroup1">
+    <classes>
+      <class name="com.tests.Test1"/>
+    </classes>
+  </test>
+
+  <test name="TestGroup2">
+    <classes>
+      <class name="com.tests.Test2"/>
+    </classes>
+  </test>
+</suite>
+
+4.Suites → parallel execution of different test suites.
+
+- You can define multiple suite XML files and run them in parallel from the command line or Jenkins.
+
+{testng -suitethreadpoolsize 2 suite1.xml suite2.xml]
+
+-Important Notes
+
+1. Always use thread-count to limit the number of parallel threads.
+2. In Selenium frameworks, ensure WebDriver instances are thread-safe (commonly achieved using ThreadLocal<WebDriver>) to avoid conflicts.
+3. Use @DataProvider(parallel = true) if you want data-driven tests to run in parallel.
+
+- Summary :
+So in summary:
+
+- Use testng.xml parallel attribute for methods, classes, tests, suites.
+- Use thread-safe WebDriver (ThreadLocal) in automation frameworks.
+- Use DataProvider(parallel=true) for parallel data-driven execution.
+
+What will happen if ?
+
+1️⃣ If you don’t set thread-count ?
+
+TestNG will by default create as many threads as test methods/classes/tests you have.
+Example: If you have 50 test methods and you say parallel="methods" but no thread-count, TestNG may try to spawn 50 threads 😱.
+Problems:
+1. Your machine/CI server may run out of resources (CPU, memory).
+2. Selenium Grid/Browser may crash due to too many parallel browser sessions.
+3. Execution may become slower instead of faster because of context switching overhead.
+
+2️⃣ If WebDriver instances are not thread-safe ?
+👉 Normally in a sequential test run:
+
+WebDriver driver = new ChromeDriver();
+
+Works fine since only one test uses it at a time.
+👉 But in parallel execution, multiple tests share the same driver object unless you use ThreadLocal.
+
+What happens?
+- Test A opens Chrome → goes to google.com.
+- Test B starts parallel → uses the same driver → suddenly navigates to facebook.com.
+- Now both A and B are fighting for the same browser session 🤯.
+
+Symptoms you’ll see:
+- Tests fail randomly.
+- Elements not found (because page changed unexpectedly).
+- One test closes the browser while another test is still using it.
+- Flaky tests → impossible to debug.
+
+Why ThreadLocal?
+
+ThreadLocal<T> in Java ensures that each thread gets its own copy of a variable.
+In TestNG parallel execution, each test method/class runs on its own thread → so we use ThreadLocal<WebDriver> to ensure test isolation.
+private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
+
+Solution :
+
+package com.framework.driver;
+
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.firefox.FirefoxDriver;
+
+public class DriverManager {
+
+    // ThreadLocal to keep WebDriver instance per thread
+    private static ThreadLocal<WebDriver> driver = new ThreadLocal<>();
+
+    // Get driver
+    public static WebDriver getDriver() {
+        return driver.get();
+    }
+
+    // Set driver
+    public static void setDriver(WebDriver driverInstance) {
+        driver.set(driverInstance);
+    }
+
+    // Quit driver
+    public static void quitDriver() {
+        if (driver.get() != null) {
+            driver.get().quit();
+            driver.remove(); // cleanup
+        }
+    }
+
+    // Initialize browser
+    public static void initDriver(String browser) {
+        if (browser.equalsIgnoreCase("chrome")) {
+            setDriver(new ChromeDriver());
+        } else if (browser.equalsIgnoreCase("firefox")) {
+            setDriver(new FirefoxDriver());
+        } else {
+            throw new IllegalArgumentException("Unsupported browser: " + browser);
+        }
+        getDriver().manage().window().maximize();
+    }
+}
+
+
+so each thread gets its own isolated WebDriver instance.
+
+3️⃣ If you don’t set @DataProvider(parallel = true)
+
+When running DataProvider tests, by default TestNG runs them sequentially.
+
+Example:
+You supply 10 sets of login credentials → they will execute one after another, not parallel.
+If you enabled parallel="methods" but DataProvider isn’t parallel, TestNG won’t take full advantage.
+So your execution will be slower than expected.
+
+-----

@@ -15,8 +15,7 @@ public class ToFindTheVowel {
 		for (int i = 0; i < vowels.length; i++) {
 
 			for (int j = 0; j < name_Array.length; j++) {
-				// element
-
+				// elements
 				if (vowels[i] == name_Array[j]) {
 					var = name_Array[j];
 					count++;

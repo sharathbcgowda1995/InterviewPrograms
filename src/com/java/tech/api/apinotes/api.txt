@@ -1801,5 +1801,54 @@ Real-world SDET Example: Useful for building dynamic API payloads or test data o
 Mention Lombok: @Builder in Lombok auto-generates builder code.
 
 ----
+Different types of framework :
 
+4. Data-Driven Testing Framework :
+- Separate test data from scripts (Excel, CSV, DB). Same script runs with multiple data sets.
+- Benefit: One script handles many scenarios.
+
+@DataProvider(name="loginData")
+public Object[][] getData() {
+    return new Object[][] {
+        {"admin","admin123"},
+        {"user1","user123"},
+        {"guest","guest123"}
+    };
+}
+
+@Test(dataProvider="loginData")
+public void loginTest(String username, String password) {
+    driver.findElement(By.id("username")).sendKeys(username);
+    driver.findElement(By.id("password")).sendKeys(password);
+    driver.findElement(By.id("login")).click();
+}
+
+5. Keyword-Driven Framework :
+
+6. Hybrid Testing Framework :
+
+7. BDD (Behavior-Driven Development) Framework :
+- Write test cases in plain English (Gherkin syntax) → understandable by BA, Dev, QA.
+(Cucumber + Gherkin):
+Feature: Login
+Scenario: Successful Login
+  Given user is on login page
+  When user enters "admin" and "admin123"
+  Then homepage should be displayed
+
+8. TDD (Test-Driven Development) Framework :
+
+Idea: Write tests first, then write code to make them pass. : JUNIT
+
+@Test
+public void testAddition() {
+    Calculator calc = new Calculator();
+    assertEquals(5, calc.add(2,3));
+}
+
+public class Calculator {
+    public int add(int a, int b) {
+        return a + b;
+    }
+}
 

@@ -1,4 +1,4 @@
-//package com.java.automation.api.deserialization;
+//package com.java.tech.api.deserialization;
 //
 //import com.fasterxml.jackson.databind.ObjectMapper;
 //

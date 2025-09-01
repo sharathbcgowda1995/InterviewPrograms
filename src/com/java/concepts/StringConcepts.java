@@ -20,3 +20,14 @@ public class StringConcepts {
 	}
 
 }
+/*
+Concepts involved:
+
+String creation in Java
+
+String str = new String("Sharath");
+→ Creates a new object in the heap, even if "Sharath" already exists in the String Constant Pool (SCP).
+
+String str2 = "Sharath";
+→ String literals are stored in the SCP. If "Sharath" already exists in the pool, it will reuse the same reference.
+ */

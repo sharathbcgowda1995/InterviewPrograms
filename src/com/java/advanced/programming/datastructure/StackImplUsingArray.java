@@ -1,4 +1,4 @@
-package com.java.datastructure;
+package com.java.advanced.programming.datastructure;
 
 public class StackImplUsingArray {
 
