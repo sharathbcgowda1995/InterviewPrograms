@@ -7,7 +7,7 @@
  * 6. Once the iteration is complete just check the stack isn't empty or not it should be empty if not then return false 
  */
 
-package com.java.advanced.programming;
+package com.java.advanced.programming.LeetCode;
 
 import java.util.Stack;
 

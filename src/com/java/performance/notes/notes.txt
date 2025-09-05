@@ -1,0 +1,167 @@
+Performance Testing Interview Questions with Detailed Examples:
+
+1. What is Performance Testing and why is it needed?
+👉 Definition:
+Performance testing evaluates how a system behaves under different workloads (speed, stability, scalability).
+👉 Example:
+Imagine a bank’s mobile app. If 1,000 users try to transfer money at the same time, the app shouldn’t crash or slow down.
+Performance testing ensures transactions are processed within acceptable limits.
+
+2. Difference between Performance, Load, Stress, Spike, Endurance (Soak), and Scalability testing.
+
+1. Performance Testing: General term for testing system speed & stability.
+
+2. Load Testing: Test system with expected user load.
+Ex: A ticket-booking site expected to handle 5,000 users at once. Test with 5,000 users.
+
+3. Stress Testing: Push beyond limits until it breaks.
+Ex: Push 20,000 users until server crashes → know the breaking point.
+
+4. Spike Testing: Sudden increase in load.
+Ex: Flipkart sale: users jump from 1k → 20k instantly.
+
+5. Endurance (Soak) Testing: Long-duration test.
+Ex: Run 1,000 users for 12 hours to check memory leaks.
+
+6. Scalability Testing: Check if the system can scale up/down.
+Ex: API runs fine on 4 servers. Add 2 more servers → performance should improve.
+
+3. What are performance bottlenecks and how do you identify them?
+👉 Definition:
+Bottlenecks are weak points that slow performance.
+👉 Examples:
+High CPU usage → inefficient code.
+High DB response time → unoptimized queries.
+Low network bandwidth → too much data transfer.
+👉 How to identify:
+Use monitoring tools (Grafana, CloudWatch, New Relic) alongside test results.
+
+4. What metrics do you typically monitor during performance testing?
+Response Time (Avg, Min, Max, Percentiles).
+Throughput (Requests/sec).
+Error rate (% failures).
+CPU/Memory/Disk I/O usage.
+Network latency.
+
+👉 Example:
+During a JMeter test, API response time = 1.5s (90th percentile SLA ≤ 2s), throughput = 200 req/sec, CPU at 70%. Looks healthy.
+
+5. Difference between client-side and server-side performance?
+Client-side: Time spent rendering page/UI in browser.
+Server-side: Time server takes to process requests.
+👉 Example:
+API takes 800ms (server-side).
+Page takes 3s to load images, JS, CSS (client-side).
+Both must be optimized separately.
+
+🔹 Tool-based Questions
+1. Which performance testing tools have you used?
+👉 Example Answer:
+I’ve used JMeter for API load testing. For distributed load, I’ve integrated it with BlazeMeter.
+I’ve also used Locust (Python-based) for simulating millions of users.
+
+2. How do you parameterize test data?
+👉 Example in JMeter:
+Use CSV Data Set Config to pass dynamic usernames & passwords instead of hardcoding.
+👉 Example in Locust:
+
+from locust import HttpUser, task
+import random
+
+class WebsiteUser(HttpUser):
+    @task
+    def login(self):
+        user = random.choice(["user1", "user2", "user3"])
+        self.client.post("/login", {"username": user, "password": "pass123"})
+
+3. How do you simulate concurrent users?
+👉 In JMeter, set Thread Group → Number of Threads = 1000.
+👉 In Locust, run: locust -f load_test.py --users 1000 --spawn-rate 50
+This simulates 1000 users ramping up at 50/sec.
+
+4. How do you monitor server health during a test run?
+👉 Example: Integrate JMeter with Grafana + Prometheus to track CPU, memory, GC, and DB latency.
+👉 Cloud apps: Use AWS CloudWatch for EC2/RDS metrics.
+
+5. How do you analyze JMeter results?
+👉 Check Aggregate Report:
+Avg response = 1.8s
+90th percentile = 2.1s (if SLA is 2s → fail)
+Throughput = 250 req/sec
+👉 Graphs help identify slow endpoints.
+
+🔹 Scenario-based Questions
+1. Login API slows down at 1,000 users. How to debug?
+Check DB (too many connections? slow queries?).
+Check CPU/memory usage.
+Check authentication service.
+👉 Example: Found DB had only 200 max connections → increase pool size.
+
+2. Response times increase gradually in a 2-hour test.
+👉 Likely memory leak or resource exhaustion.
+👉 Example: JVM heap memory keeps growing → OutOfMemoryError after 3 hours.
+
+3. How do you determine workload model?
+👉 Use production logs or business estimates.
+👉 Example:
+E-commerce site → 60% users browse products, 30% add to cart, 10% checkout. Model test accordingly.
+
+4. If response time is high, how do you find root cause?
+If DB queries are slow → DB issue.
+If CPU is high → code inefficiency.
+If network latency is high → bandwidth issue.
+👉 Example: Payment API slow due to DB index missing on transaction_id.
+
+5. How to design test for e-commerce checkout flow?
+👉 Typical flow: Browse → Add to Cart → Checkout → Payment → Order Confirmation.
+👉 Distribute load: 60% browsing, 30% cart, 10% payment.
+
+🔹 Metrics & Analysis
+1. What is throughput vs response time?
+Throughput: Requests/sec.
+Response time: Time for 1 request.
+👉 Example: API handles 300 req/sec with avg response 1.2s.
+
+2. What is 90th percentile response time?
+👉 90% of requests complete within this time.
+👉 Example: 90th percentile = 2s means 90% requests finish ≤ 2s.
+
+3. What is TPS and how to calculate?
+👉 TPS = Total transactions / Total time.
+👉 Example: 6000 logins in 60s → 100 TPS.
+
+4. What is SLA in performance testing?
+👉 SLA = agreed performance targets.
+👉 Example: “Checkout API must respond ≤ 2s for 95% requests.”
+
+5. What if SLA is not met?
+👉 Analyze bottlenecks, tune DB/infra/code, retest.
+👉 Example: SLA = 1s response, current = 2.5s. Found unoptimized SQL query → add index → response = 1.1s.
+
+🔹 Real-time / Advanced
+
+1. How do you test microservices/distributed systems?
+👉 Focus on individual APIs + end-to-end flow.
+👉 Use correlation IDs for tracing requests.
+👉 Example: Payment service depends on Auth + Wallet + DB. If Wallet is slow, Payment slows.
+
+2. How to test APIs vs web apps?
+APIs → JSON/XML payloads, measure TPS, response.
+Web apps → End-to-end flows with UI, also test rendering.
+
+3. How do you integrate performance testing in CI/CD?
+👉 Run JMeter/Locust in pipelines (Jenkins, GitHub Actions).
+👉 Fail build if SLA not met.
+👉 Example: jmeter -n -t test.jmx -l results.jtl -e -o report runs automatically after deployment.
+
+4. How do you estimate number of users to simulate?
+👉 Formula: Peak load × Concurrency %
+👉 Example: 100k daily users, peak concurrency = 10% → 10k users simulated.
+
+5. Common DB bottlenecks in apps?
+Missing indexes.
+Too many joins.
+Connection pool limit.
+
+Large result sets.
+👉 Example: Query SELECT * FROM orders slowed checkout → replaced with indexed query SELECT order_id, status FROM orders WHERE user_id=?.

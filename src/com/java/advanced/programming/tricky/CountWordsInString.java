@@ -1,4 +1,4 @@
-package com.java.advanced.programming;
+package com.java.advanced.programming.tricky;
 
 public class CountWordsInString {
 
@@ -10,9 +10,7 @@ public class CountWordsInString {
 		//By checking the space
 		for (int i = 0; i < s.length()-1; i++) {
 			if ((s.charAt(i) == ' ') && (s.charAt(i + 1) != ' ')) {
-
 				count++;
-
 			}
 		}
 

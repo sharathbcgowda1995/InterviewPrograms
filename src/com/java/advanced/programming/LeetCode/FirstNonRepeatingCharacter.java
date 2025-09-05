@@ -3,7 +3,7 @@
  * 2. If we find the first non-reptitive element then break the outer most loop as well.
  * */
 
-package com.java.advanced.programming;
+package com.java.advanced.programming.LeetCode;
 
 public class FirstNonRepeatingCharacter {
 

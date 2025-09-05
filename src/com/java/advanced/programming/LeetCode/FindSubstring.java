@@ -1,4 +1,4 @@
-package com.java.advanced.programming;
+package com.java.advanced.programming.LeetCode;
 
 import java.util.ArrayList;
 

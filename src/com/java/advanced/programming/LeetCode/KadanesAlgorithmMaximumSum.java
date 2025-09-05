@@ -13,7 +13,7 @@ public class KadanesAlgorithmMaximumSum {
         long sum = 0;
         int startPoint = 0;
         int startIndex = -1;
-        int endIndex = -2;
+        int endIndex = -1;
         long maxSum = Long.MIN_VALUE;
         for (int i = 0; i < arr.length; i++) {
 

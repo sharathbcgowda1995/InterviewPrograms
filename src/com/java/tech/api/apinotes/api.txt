@@ -1547,7 +1547,7 @@ public class UserApiTest {
 
 - Integration with microservices (Kafka + AWS SQS/SNS).
 
-20. 20. Bonus: Can you show me a complete E2E Rest Assured Test?
+20.Bonus: Can you show me a complete E2E Rest Assured Test?
 
 @Test
 public void createAndFetchUserTest() {
@@ -1587,9 +1587,7 @@ Soft → collects all failures, reports at the end (SoftAssert in TestNG).
 🔹 What is Singleton Design Pattern?
 
 It ensures that a class has only one instance throughout the application.
-
 Provides a global point of access to that instance.
-
 Useful when you need to share the same object across different classes (e.g., DB connection, WebDriver instance in automation).
 
 🔹 Real-Life Example in Automation
@@ -1718,11 +1716,8 @@ public class SingletonDoubleCheck {
 🔹 What is the Builder Design Pattern?(Fluent design pattern also same)
 
 It’s a creational design pattern.
-
 Used when we need to construct complex objects step by step.
-
 Helps in creating immutable objects with flexibility.
-
 Common in test automation when building request payloads for REST APIs or setting up test data.
 
 Example 1 – Simple Java Builder
@@ -1852,3 +1847,123 @@ public class Calculator {
     }
 }
 
+-------------Allure test report integration----------
+
+- To integrate the allure report first we need the allure-testng integration so
+downlad that dependency from the maven repo and then allure-testng 2.20.1
+
+-Once updated the maven project then in the terminal
+[allure --version]
+
+- Then download the allure binaries for the MAC
+
+- Then take the path of the allure where it's installed and then add that in the environment variable.
+
+- Once after the test execution then the allure report folder in the maven will be created then
+go there and in that path goto terminal and then type as "allure serve"
+
+- Integration with the jenkins
+1. Install plugin: Manage Jenkins → Plugins → Available → Allure Jenkins Plugin (install + restart if needed).
+
+2. Tool config: Manage Jenkins → Tools → Allure Commandline → “Add Allure Commandline”
+Name it e.g. Allure2
+Choose “Install automatically” or point to an installed path on the agent.
+You don’t run allure serve in CI. The plugin will publish a permanent link on the build page.
+
+- What you’ll see in Jenkins
+On every build page, “Allure Report” link in the left sidebar.
+A trend chart on the job page (Allure Test Result Trend).
+Direct URL looks like:
+https://<jenkins>/job/<your-job>/<build-number>/allure/
+and a latest shortcut:
+https://<jenkins>/job/<your-job>/lastSuccessfulBuild/allure/
+
+
+pipeline {
+  agent any
+  tools {
+    // Makes the Allure CLI available on PATH on the agent
+    allure 'Allure2'
+    // If you rely on a Maven tool install, add: maven 'Maven3'
+  }
+  stages {
+    stage('Checkout') {
+      steps { checkout scm }
+    }
+    stage('Build & Test') {
+      steps {
+        sh 'mvn -B -q clean test'   // runs tests, produces target/allure-results
+      }
+    }
+  }
+  post {
+    always {
+      // Publish the Allure report (creates a link on the build page)
+      allure includeProperties: false,
+             jdk: '',
+             results: [[path: 'target/allure-results']]
+      // (optional) keep raw results/report for download
+      archiveArtifacts artifacts: 'target/allure-results/**', onlyIfSuccessful: false
+    }
+  }
+}
+
+--------
+Idempotent concept in java :
+
+- An operation is idempotent if performing it multiple times has the same effect as performing it once.
+- Switching on a light:
+  If the light is already ON, pressing the "ON" button again doesn’t change anything.
+  → That action is idempotent.
+
+Idempotent method
+
+public class IdempotentExample {
+    private boolean flag = false;
+
+    public void setFlagTrue() {
+        this.flag = true;
+    }
+
+    public static void main(String[] args) {
+        IdempotentExample obj = new IdempotentExample();
+        obj.setFlagTrue();
+        obj.setFlagTrue();
+        obj.setFlagTrue();
+        System.out.println(obj.flag);  // Always true
+    }
+}
+
+No matter how many times setFlagTrue() is called → final state is the same (flag = true).
+
+2: Non-idempotent method :
+
+public class NonIdempotentExample {
+    private int counter = 0;
+
+    public void increment() {
+        this.counter++;
+    }
+
+    public static void main(String[] args) {
+        NonIdempotentExample obj = new NonIdempotentExample();
+        obj.increment();  // counter = 1
+        obj.increment();  // counter = 2
+        obj.increment();  // counter = 3
+        System.out.println(obj.counter);  // Different result each time
+    }
+}
+
+Idempotency in REST APIs (Java context)
+
+GET → Idempotent (fetching the same resource doesn’t change anything).
+
+PUT → Idempotent (replacing a resource with the same value multiple times has the same effect).
+
+DELETE → Idempotent (deleting the same resource multiple times still results in "not there").
+
+POST → Usually NOT idempotent (each call creates a new resource).
+
+- Why important?
+Retry mechanisms: In distributed systems, retries happen (network failures, timeouts).
+If your operation is idempotent, retries won’t cause wrong data.
