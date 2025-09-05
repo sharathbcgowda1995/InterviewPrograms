@@ -1,33 +1,31 @@
 package com.java.programming.LeetCode;
 
 import java.util.HashSet;
+import java.util.*;
+// https://docs.google.com/document/d/1LS1ap3uXQo3nMdd8LjTaQ0cSGXS_NpSbr1xkmQOO3jw/edit?tab=t.0
+// If element that we are checking is present then remove it from the list , update the start index
+// and if not present then add it to the list , add to the list + update the end index + calculate max_length
 
 public class LengthOfMaxSubString {
 
     public static int findStringLength(String st) {
-        // HashSet to store characters in the current window
-        HashSet<Character> set = new HashSet<>();
+       int start =0;
+       int end = 0;
+       int max_length =0 ;
 
-        int start = 0; // Left pointer of the window
-        int maxLength = 0; // Maximum length of substring
+        List<Character> list = new ArrayList<>();
 
-        // Loop over the string with the right pointer `end`
-        for (int end = 0; end < st.length(); end++) {
-
-            // If the character at 'end' is already in the set, move `start` to the right
-            while (set.contains(st.charAt(end))) {
-                set.remove(st.charAt(start));
-                start++; // Move the start pointer to the right to remove the duplicate character
+        while(end< st.length()){
+            if(!list.contains(st.charAt(end))){
+                list.add(st.charAt(end));
+                end++;
+                max_length = Math.max(max_length,list.size());
+            }else{
+                list.remove(Character.valueOf(st.charAt(start)));
+                start++;
             }
-
-            // Add the current character at 'end' to the set
-            set.add(st.charAt(end));
-
-            // Update the maximum length of the substring
-            maxLength = Math.max(maxLength, end - start + 1);
         }
-
-        return maxLength; // Return the length of the longest substring without repeating characters
+        return max_length;
     }
 
     public static void main(String[] args) {

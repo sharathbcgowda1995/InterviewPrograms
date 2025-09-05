@@ -6,7 +6,9 @@ public class Counter {
 
     //1. Making the method synchronized
     public synchronized int incrementCount() {
+
         return count += 1;
+
     }
 
 //    //2. Making the block synchronized

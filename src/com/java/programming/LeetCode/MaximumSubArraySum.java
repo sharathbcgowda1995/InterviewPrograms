@@ -5,7 +5,7 @@ package com.java.programming.LeetCode;
 
 // Link : https://docs.google.com/document/d/1LS1ap3uXQo3nMdd8LjTaQ0cSGXS_NpSbr1xkmQOO3jw/edit?tab=t.0
 
-public class MaximumSubArray {
+public class MaximumSubArraySum {
 
     public static void main(String[] args) {
 

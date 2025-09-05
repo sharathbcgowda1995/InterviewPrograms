@@ -91,7 +91,6 @@ public class StatusResponse {
 
 
 package tests;
-
 import base.BaseTest;
 import io.restassured.http.ContentType;
 import io.restassured.response.Response;
@@ -99,7 +98,6 @@ import model.StatusResponse;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 import utils.AuthUtil;
-
 import static io.restassured.RestAssured.given;
 
 public class StatusApiTest extends BaseTest {
