@@ -520,6 +520,146 @@ public class TestStrings {
         System.out.println(sb); // Output: Hello World
     }
 }
+```
 
+### How would you design test cases for an application where the requirements are not clear? 
 
 ```
+When requirements are unclear I use quick clarification + assumption capture,
+timeboxed exploratory testing to discover behavior, 
+BDD examples to force decisions, and then automate stable, 
+high-risk flows first. 
+I document assumptions, iterate tests as specs firm up, 
+and keep the team involved for rapid feedback.
+```
+### Suppose you have 10 test cases and they are failing randomly what will be your approach on fixing those scripts.
+```
+1. Re-run the failing suite locally (same branch/commit) to confirm flakiness.
+2. Collect artifacts: logs, screenshots, video, CI console output, stacktraces, browser console/network logs.
+3. Check CI environment (node load, browser versions, grid capacity) — any infra blips?
+4. Timing/synchronization (most common): race conditions, element not ready.
+5. Test data issues: shared state, stale DB, duplicates.
+6. Environment: unstable test infra, network flakiness, resource limits.
+7. Third-party service flakiness: flaky API responses, timeouts.
+8. Order dependency: tests rely on state set by previous tests.
+```
+### Do you know factory design pattern ? 
+
+```
+A Factory is a creational design pattern that encapsulates object creation. 
+
+    1. Simple/Static Factory — a static method decides which concrete instance to return. (Not a GOF pattern name but commonly used.)
+    2. Factory Method — define an interface for creating an object, but let subclasses decide which class to instantiate.
+    3. Abstract Factory — provide an interface for creating families of related objects (e.g., UIFactory producing Button and Textbox for Windows vs Mac).
+
+:WebDriver Factory (common in automation frameworks): 
+
+    public enum Browser { CHROME, FIREFOX, HEADLESS_CHROME }
+    
+    public class WebDriverFactory {
+        public static WebDriver createDriver(Browser browser) {
+            switch(browser) {
+                case CHROME:
+                    WebDriverManager.chromedriver().setup();
+                    return new ChromeDriver();
+                case FIREFOX:
+                    WebDriverManager.firefoxdriver().setup();
+                    return new FirefoxDriver();
+                case HEADLESS_CHROME:
+                    WebDriverManager.chromedriver().setup();
+                    ChromeOptions opts = new ChromeOptions();
+                    opts.addArguments("--headless=new", "--window-size=1920,1080");
+                    return new ChromeDriver(opts);
+                default:
+                    throw new IllegalArgumentException("Unsupported browser: " + browser);
+            }
+        }
+    }
+    
+Usage in tests : 
+    WebDriver driver = WebDriverFactory.createDriver(Browser.CHROME);
+```
+### How would you decide that I need to stop testing for a particular feature ?
+
+```
+Quick checklist to use before stopping
+     - Acceptance criteria: ✅ 
+     - No P0/P1 open (or signed exception): ✅
+     - Automated regression passing: ✅
+     - Manual exploratory session done and logged: ✅
+     - Test environments stable & reproducible: ✅
+     - Performance/security gates passed or scheduled: ✅
+     - Monitoring & rollback plan in place: ✅
+     - Stakeholder sign-off recorded: ✅
+```
+### What are global variables and environment variables in postman. ?
+
+```
+Environment variables:  
+are key/value pairs scoped to a specific environment (e.g., Dev, Staging, Prod). 
+Use them for values that change per environment (base URLs, credentials, API keys for that environment).
+
+Global variables:  
+are key/value pairs available to every request across all environments and collections. 
+Use them for values that truly remain constant across environments (rare — e.g., company-wide constants).
+```
+
+### I want to check API response is correct or not but when hitting API using GET ,it takes 1 minute for response to come , is there other HTTP Method ? 
+
+```
+Yes — there are other HTTP methods, but switching method alone usually won’t make a slow API faster. 
+First figure out why it’s slow, then pick a strategy: use HEAD or conditional GET to avoid large bodies, reduce payloads (fields/pagination), enable compression/caching, 
+or switch to an asynchronous pattern (POST → 202 + job id, then poll or webhook) so the client isn’t blocked waiting a minute.
+```
+
+### Do you know use of TRACE API Method ? 
+
+```
+curl -v -X TRACE https://api.example.com/resource
+
+Response : 
+> TRACE /resource HTTP/1.1
+> Host: api.example.com
+> User-Agent: curl/7.80.0
+> Authorization: Bearer s3cr3t-token
+> Accept: */*
+>
+< HTTP/1.1 200 OK
+< Content-Type: message/http
+< Content-Length: 202
+<
+TRACE /resource HTTP/1.1
+Host: api.example.com
+User-Agent: curl/7.80.0
+Authorization: Bearer s3cr3t-token
+Accept: */*
+
+Explannation :
+    What TRACE does: asks the server to echo back the exact HTTP request it received (useful for debugging proxies).
+    Example: curl -X TRACE https://host/path returns the request in the response body.
+    Why it’s dangerous: it can expose sensitive headers (cookies/authorization) — risk of XST — so disable TRACE in production and use safer diagnostics.
+    If you must debug: run TRACE only in secure/dev networks, and then disable it.
+```
+
+### One question from Java stream related to finding duplicate element. 
+
+```
+Set<String> duplicates = items.stream()
+        .filter(i -> Collections.frequency(items, i) > 1) // filter duplicates
+        .collect(Collectors.toSet()); // collect unique duplicates
+
+System.out.println(duplicates); // [banana, apple]
+```
+
+### How would you handle a critical bug discovered just before release?
+
+```
+If I discover a critical bug just before release, 
+I’d first confirm and document it clearly with logs, repro steps, and impact. 
+Then I’d immediately notify the release manager and stakeholders, since this could change the go/no-go decision. 
+If the bug blocks a core flow like payments or login, I’d recommend halting the release until it’s fixed and validated, 
+or using a feature flag to disable the problematic feature. If it’s lower priority, we can release with it documented as a known issue. 
+After resolution, I’d ensure the bug is covered by automation to prevent regression, and review our test strategy to catch similar issues earlier.
+```
+
+### 

@@ -7,3 +7,5 @@
 - Use contains method to find the common locator.
 
 2.
+➡ Explain Page Factory in Selenium and its annotations.
+➡ What is the purpose of a constructor in Page Factory?
