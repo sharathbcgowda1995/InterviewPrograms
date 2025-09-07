@@ -1,4 +1,4 @@
-package com.java.javanotes.concepts;
+package com.java.javanotes.concepts.generic;
 
 public class Laptop implements Comparable<Laptop> {
 	private int price;

@@ -1,4 +1,4 @@
-package com.java.javanotes.concepts;
+package com.java.javanotes.concepts.generic;
 
 import java.util.List;
 import java.util.ArrayList;
