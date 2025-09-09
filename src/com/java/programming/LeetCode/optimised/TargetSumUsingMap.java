@@ -20,8 +20,6 @@ public class TargetSumUsingMap {
         HashMap<Integer, Integer> map = new HashMap<>();
         int[] resultArrayPositions = new int[2];
 
-        int count = 0;
-
         for (int i = 0; i < arr.length; i++) {
 
             int value = target - arr[i];
