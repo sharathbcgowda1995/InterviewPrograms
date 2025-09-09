@@ -1,4 +1,4 @@
-package com.java.programming.LeetCode.datastructure;
+package com.java.programming.automationengineer.standard;
 
 public class StackImplUsingArray {
 

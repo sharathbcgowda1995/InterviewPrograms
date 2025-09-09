@@ -1,4 +1,4 @@
-package com.java.programming.LeetCode;
+package com.java.programming.LeetCode.optimised;
 
 import java.util.HashMap;
 

@@ -8,15 +8,15 @@ import java.util.*;
 public class LengthOfMaxOrLongestSubString {
 
     public static int findStringLength(String st) {
-       int start =0;
-       int end = 0;
-       int max_length =0 ;
+        int start = 0;
+        int end = 0;
+        int max_length = 0;
 
         List<Character> list = new ArrayList<>();
         String maxSubstring = "";
 
-        while(end< st.length()){
-            if(!list.contains(st.charAt(end))){
+        while (end < st.length()) {
+            if (!list.contains(st.charAt(end))) {
 
                 list.add(st.charAt(end));
                 end++;
@@ -26,13 +26,13 @@ public class LengthOfMaxOrLongestSubString {
                     max_length = list.size();
                     // build substring from current window
                     StringBuilder sb = new StringBuilder();
-                    for (Character c : list){
+                    for (Character c : list) {
                         sb.append(c);
                     }
                     maxSubstring = sb.toString();
                 }
 
-            }else{
+            } else {
                 list.remove(Character.valueOf(st.charAt(start)));
                 start++;
             }
@@ -46,3 +46,8 @@ public class LengthOfMaxOrLongestSubString {
         System.out.println(LengthOfMaxOrLongestSubString.findStringLength(value)); // Output should be 6 for "abcdef"
     }
 }
+
+/*
+Time Complexity = O(n²)
+Space Complexity = O(n)
+ */

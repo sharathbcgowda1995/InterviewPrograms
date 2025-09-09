@@ -1531,6 +1531,127 @@ Real-world SDET Example: Useful for building dynamic API payloads or test data o
 
 Mention Lombok: @Builder in Lombok auto-generates builder code.
 
+>> ## With Lombok :
+
+Step 1: Add Lombok Dependency in pom.xml
+
+<dependencies>
+    <!-- Lombok -->
+    <dependency>
+        <groupId>org.projectlombok</groupId>
+        <artifactId>lombok</artifactId>
+        <version>1.18.34</version> <!-- use the latest stable version -->
+        <scope>provided</scope>
+    </dependency>
+</dependencies>
+
+Step 2: Verify Installation : Create a simple class with Lombok annotations:
+
+import lombok.Data;
+
+@Data  // generates getters, setters, toString, equals, hashCode
+public class Person {
+    private String name;
+    private int age;
+}
+
+Usage : 
+
+public class Test {
+    public static void main(String[] args) {
+        Person p = new Person();
+        p.setName("Alice");
+        p.setAge(25);
+
+        System.out.println(p);  // Person(name=Alice, age=25)
+    }
+}
+
+>> Builder design pattern is written with single @Builder annotation
+
+import lombok.Builder;
+import lombok.ToString;
+
+@Builder
+@ToString
+public class User {
+    private String name;
+    private int age;
+    private String email;
+}
+
+Usage  : 
+
+public class Test {
+    public static void main(String[] args) {
+        User user = User.builder()
+                        .name("Alice")
+                        .age(25)
+                        .email("alice@example.com")
+                        .build();
+
+        System.out.println(user);
+    }
+}
+
+## Use it with the 
+
+1. @NoArgsConstructor    // Auto-generates default constructor
+2. @AllArgsConstructor   // Auto-generates constructor with all fields
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
+
+@Builder              // Auto-generates builder pattern
+@NoArgsConstructor    // Auto-generates default constructor
+@AllArgsConstructor   // Auto-generates constructor with all fields
+@ToString
+public class Employee {
+    private String id;
+    private String name;
+    private int age;
+    private String department;
+}
+
+Usage : 
+
+1. Using Builder
+
+public class TestEmployee {
+    public static void main(String[] args) {
+        Employee emp = Employee.builder()
+                .id("E101")
+                .name("John Doe")
+                .age(30)
+                .department("Engineering")
+                .build();
+
+        System.out.println(emp);
+    }
+}
+
+Output: 
+
+Employee(id=E101, name=John Doe, age=30, department=Engineering)
+
+2. Using NoArgsConstructor 
+
+Employee emp = new Employee(); 
+// all fields are null/0 initially (default values)
+
+3. Using AllArgsConstructor 
+
+Employee emp = new Employee("E102", "Alice", 28, "HR");
+System.out.println(emp);
+
+Output:
+
+Employee(id=E102, name=Alice, age=28, department=HR)
+
+
+
 ```
 > ### Different types of framework :
 
