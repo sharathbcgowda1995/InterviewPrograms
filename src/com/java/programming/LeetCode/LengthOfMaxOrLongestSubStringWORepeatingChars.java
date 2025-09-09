@@ -5,7 +5,7 @@ import java.util.*;
 // If element that we are checking is present then remove it from the list , update the start index
 // and if not present then add it to the list , add to the list + update the end index + calculate max_length
 
-public class LengthOfMaxOrLongestSubString {
+public class LengthOfMaxOrLongestSubStringWORepeatingChars {
 
     public static int findStringLength(String st) {
         int start = 0;
@@ -42,8 +42,8 @@ public class LengthOfMaxOrLongestSubString {
     }
 
     public static void main(String[] args) {
-        String value = "abcabcbb"; // Test string
-        System.out.println(LengthOfMaxOrLongestSubString.findStringLength(value)); // Output should be 6 for "abcdef"
+        String value = "abcdefgabcd"; // Test string
+        System.out.println(LengthOfMaxOrLongestSubStringWORepeatingChars.findStringLength(value)); // Output should be 6 for "abcdef"
     }
 }
 
