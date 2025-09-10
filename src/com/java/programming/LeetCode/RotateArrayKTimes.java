@@ -5,7 +5,7 @@ public class RotateArrayKTimes {
     public static void main(String[] args) {
         int[] arr = {1, 2, 3, 4, 5};
         int k = 3;
-        reverseArrayToLeftByKTimes(arr,k);
+//        reverseArrayToLeftByKTimes(arr,k);
         reverseArrayToRightByKTimes(arr,k);
     }
     public static void reverseArrayToLeftByKTimes(int[] arr, int k){
@@ -17,7 +17,7 @@ public class RotateArrayKTimes {
             arr[arr.length - 1] = first; // put first element at end
         }
 
-        System.out.println("Rotated: " + Arrays.toString(arr));
+        System.out.println("Rotated Left : " + Arrays.toString(arr));
     }
 
     public static void reverseArrayToRightByKTimes(int[] arr, int k) {

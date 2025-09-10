@@ -23,3 +23,7 @@ public class TragetSum { // Corrected class name
         findSumIndex(arr, targetSum);
     }
 }
+/*
+Time Complexity: O(n²)
+Space Complexity: O(1)
+ */

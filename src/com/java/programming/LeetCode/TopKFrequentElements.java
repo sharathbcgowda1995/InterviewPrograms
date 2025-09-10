@@ -66,3 +66,8 @@ public class TopKFrequentElements {
         return mostFrequentElements;
     }
 }
+
+/*
+Time Complexity: O(n)
+Space Complexity: O(n)
+ */
